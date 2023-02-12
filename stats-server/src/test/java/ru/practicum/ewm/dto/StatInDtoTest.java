@@ -1,34 +1,38 @@
-package ru.practicum.ewm.dto.stats;
+package ru.practicum.ewm.dto;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.json.JsonTest;
 import org.springframework.boot.test.json.JacksonTester;
-import ru.practicum.ewm.dto.StatOutDto;
+import ru.practicum.ewm.model.Constants;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
 @JsonTest
-class StatOutDtoTest {
+class StatInDtoTest {
     @Autowired
-    private JacksonTester<StatOutDto> json;
+    private JacksonTester<StatInDto> json;
 
     @Test
     void testSerialize() throws Exception {
-        var dto = new StatOutDto(
+        var dto = new StatInDto(
                 "App name",
                 "https://some.uri.com/events/1",
-                5L
+                "10.0.65.1",
+                "2022-10-19 11:10:00"
         );
 
         var result = json.write(dto);
         assertThat(result).hasJsonPath("$.app");
         assertThat(result).hasJsonPath("$.uri");
-        assertThat(result).hasJsonPath("$.hits");
+        assertThat(result).hasJsonPath("$.ip");
+        assertThat(result).hasJsonPath("$.timestamp");
 
         assertThat(result).extractingJsonPathStringValue("$.app").isEqualTo(dto.getApp());
         assertThat(result).extractingJsonPathStringValue("$.uri").isEqualTo(dto.getUri());
-        assertThat(result).extractingJsonPathNumberValue("$.hits").isEqualTo(dto.getHits().intValue());
+        assertThat(result).extractingJsonPathStringValue("$.ip").isEqualTo(dto.getIp());
+        assertThat(result).extractingJsonPathStringValue("$.timestamp")
+                .startsWith(dto.getTimestamp().format(Constants.DATE_TIME_SPACE));
     }
 
 }
