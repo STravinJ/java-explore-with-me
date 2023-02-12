@@ -5,6 +5,7 @@
 
 	<modules>
 		<module>stats-server</module>
+		<module>ewm-service</module>
 	</modules>
 
 	<parent>
