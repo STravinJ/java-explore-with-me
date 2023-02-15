@@ -11,5 +11,4 @@ public interface StatsService {
 
     List<StatOutDto> getHitsByParams(String start, String end, List<String> uris, Boolean unique);
 
-    List<Stat> getAllHits(Integer from, Integer size);
 }

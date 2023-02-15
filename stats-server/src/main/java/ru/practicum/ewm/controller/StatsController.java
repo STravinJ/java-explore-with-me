@@ -24,7 +24,7 @@ public class StatsController {
     private final StatsService statsService;
 
     @PostMapping("/hit")
-    public void saveHit(@Valid @RequestBody StatInDto statInDto) {
+    public void saveHit(@RequestBody StatInDto statInDto) {
 
         log.info("StatsController.saveHit:\n" +
                         "app={},\n" +
@@ -40,7 +40,6 @@ public class StatsController {
     @GetMapping("/stats")
     public List<StatOutDto> getHitsByParams(@NotNull @RequestParam(name = "start") String start,
                                     @NotNull @RequestParam(name = "end") String end,
-                                    @Valid
                                     @RequestParam(name = "uris", defaultValue = "", required = false) List<String> uris,
                                     @RequestParam(name = "unique", defaultValue = "false") Boolean unique) {
 
@@ -52,22 +51,6 @@ public class StatsController {
                 start, end, uris, unique);
 
         return statsService.getHitsByParams(start, end, uris, unique);
-
-    }
-
-    @GetMapping("/log")
-    public List<Stat> getAllHits(@PositiveOrZero
-                                 @RequestParam(name = "from", defaultValue = "0") Integer from,
-                                 @Positive
-                                 @RequestParam(name = "size", defaultValue = Constants.PAGE_SIZE_STRING) Integer size) {
-
-        log.info("Stats getAllHits: {},{}", from, size);
-        log.info("StatsController.getAllHits:\n" +
-                        "from={},\n" +
-                        "size={},\n",
-                from, size);
-
-        return statsService.getAllHits(from, size);
 
     }
 

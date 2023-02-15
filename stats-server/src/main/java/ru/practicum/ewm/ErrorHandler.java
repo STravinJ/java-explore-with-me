@@ -13,7 +13,6 @@ import java.security.InvalidParameterException;
 @RestControllerAdvice(assignableTypes = {
         StatsController.class})
 public class ErrorHandler {
-    private ErrorResponse errorResponse;
 
     @ExceptionHandler({
             MethodArgumentNotValidException.class,

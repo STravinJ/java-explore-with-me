@@ -15,6 +15,7 @@ import ru.practicum.ewm.repository.StatsRepository;
 
 import javax.validation.Valid;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -31,7 +32,7 @@ public class StatsServiceImpl implements StatsService {
 
     @Override
     public List<StatOutDto> getHitsByParams(String start, String end, List<String> uris, Boolean unique) {
-        List<StatOutDto> stats = List.of();
+        List<StatOutDto> stats = Collections.emptyList();
         if (uris.size() == 0) {
             if (unique) {
                 stats = statsRepository.countByTimestampUniqueIp(
@@ -58,9 +59,4 @@ public class StatsServiceImpl implements StatsService {
         return stats;
     }
 
-    @Override
-    public List<Stat> getAllHits(Integer from, Integer size) {
-        Pageable pageable = PageRequest.of(from / size, size);
-        return statsRepository.findAll(pageable).toList();
-    }
 }
