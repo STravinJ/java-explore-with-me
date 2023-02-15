@@ -6,14 +6,9 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewm.dto.StatInDto;
 import ru.practicum.ewm.dto.StatOutDto;
-import ru.practicum.ewm.model.Constants;
-import ru.practicum.ewm.model.Stat;
 import ru.practicum.ewm.service.StatsService;
 
-import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
-import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 @RestController

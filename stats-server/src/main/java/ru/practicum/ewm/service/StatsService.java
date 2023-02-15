@@ -2,7 +2,6 @@ package ru.practicum.ewm.service;
 
 import ru.practicum.ewm.dto.StatInDto;
 import ru.practicum.ewm.dto.StatOutDto;
-import ru.practicum.ewm.model.Stat;
 
 import java.util.List;
 
