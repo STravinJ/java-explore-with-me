@@ -32,7 +32,9 @@ public class StatsServiceImpl implements StatsService {
 
     @Override
     public List<StatOutDto> getHitsByParams(String start, String end, List<String> uris, Boolean unique) {
+
         List<StatOutDto> stats = Collections.emptyList();
+
         if (uris.size() == 0) {
             if (unique) {
                 stats = statsRepository.countByTimestampUniqueIp(
@@ -56,7 +58,9 @@ public class StatsServiceImpl implements StatsService {
                         uris);
             }
         }
+
         return stats;
+
     }
 
 }
