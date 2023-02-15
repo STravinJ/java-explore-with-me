@@ -5,8 +5,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import ru.practicum.ewm.dto.StatInDto;
 import ru.practicum.service.client.BaseClient;
+import ru.practicum.service.stats.dto.StatInDto;
 
 import java.util.List;
 import java.util.Map;
