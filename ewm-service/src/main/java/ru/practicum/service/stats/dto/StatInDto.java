@@ -1,10 +1,11 @@
 package ru.practicum.service.stats.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.sun.istack.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import ru.practicum.service.stats.Constants;
+
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 @Getter
