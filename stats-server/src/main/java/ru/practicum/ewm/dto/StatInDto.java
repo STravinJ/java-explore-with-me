@@ -12,8 +12,6 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
 public class StatInDto {
     @NotNull
     private String app;
@@ -25,4 +23,12 @@ public class StatInDto {
     @JsonFormat(pattern = Constants.DATE_TIME_STRING)
     private LocalDateTime timestamp;
 
+    public StatInDto(String app, String uri, String ip, String timestamp) {
+
+        this.app = app;
+        this.uri = uri;
+        this.ip = ip;
+        this.timestamp = LocalDateTime.parse(timestamp, Constants.DATE_TIME_SPACE);
+
+    }
 }
