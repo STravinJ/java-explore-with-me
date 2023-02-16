@@ -7,7 +7,6 @@ services:
       - "9090:9090"
     depends_on:
       - stats-db
-      - ewm-service
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://stats-db:5432/ewm-stat
       - POSTGRES_USER=ewmuser
@@ -27,7 +26,7 @@ services:
     build: ewm-service
     container_name: ewm-service
     ports:
-      - "8080:8080"
+      - "8081:8081"
     depends_on:
       - ewm-db
       - stats-server
