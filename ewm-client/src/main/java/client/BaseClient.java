@@ -1,5 +1,4 @@
-package ru.practicum.service.client;
-
+package client;
 
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.*;
