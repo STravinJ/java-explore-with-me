@@ -1,74 +1,45 @@
-version: '3.8'
+version: '3.1'
 services:
-  # Stats
-  stats-server:
-    build: stats-server
-    container_name: stats-server
-    restart: always
-    ports:
-      - "9090:9090"
-    depends_on:
-      stats-db:
-        condition: service_healthy
+  ewm-client:
+    build: ewm-client
+    image: amazoncorretto:11-alpine-jdk
+    container_name: ewm-client
     environment:
-      - WAIT_HOSTS=stats-db:5432
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://stats-db:5432/stats
-      - POSTGRES_USER=sa
-      - POSTGRES_PASSWORD=password
+      - EXPLORE-WITH-ME-SERVICE_URL=http://service:9091/explore-with-me-service
 
-  # база данных для Stats
-  stats-db:
-    image: postgres:14.5-alpine
-    container_name: stats_db
-    restart: always
-    volumes:
-      - /var/lib/postgresql/data/
-    ports:
-      - "6590:5432"
-    # переменные окружения
-    environment:
-      POSTGRES_DB: stats
-      POSTGRES_USER: sa
-      POSTGRES_PASSWORD: password
-    healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-  # Main
-  ewm-service:
-    build: ewm-service
-    container_name: ewm-service
-    restart: always
     ports:
       - "8080:8080"
+
+
+  ewm-service:
+    build: ewm-service
+    image: amazoncorretto:11-alpine-jdk
+    container_name: ewm-service
+    environment:
+      - EXPLORE-WITH-ME-STATISTICS_URL=http://stats:9090
+      - SPRING_DATASOURCE_USERNAME=username
+      - SPRING_DATASOURCE_PASSWORD=password
+      - SPRING_DATASOURCE_URL=jdbc:h2:mem:resource
     depends_on:
-      ewm-db:
-        condition: service_healthy
-
-    environment:
-      - WAIT_HOSTS=ewm-db:5432
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://ewm-db:5432/ewm
-      - POSTGRES_USER=sa
-      - POSTGRES_PASSWORD=password
-      - STATS_SERVER_URL=http://stats-server:9090
-
-  # база для MAIn
-  ewm-db:
-    image: postgres:14.5-alpine
-    container_name: ewm_db
-    restart: always
-    volumes:
-      - /var/lib/postgresql/data/
+      - ewm-client
     ports:
-      - "6580:5432"
-    # переменные окружения
+      - "9091:9091"
+
+  ewm-db:
+    image: postgres:14-alpine
+
+  stats_db:
+    image: postgres:14-alpine
+
+  stats-server:
+    build: stats-server
+    image: amazoncorretto:11-alpine-jdk
+    container_name: stats-server
     environment:
-      POSTGRES_DB: ewm
-      POSTGRES_USER: sa
-      POSTGRES_PASSWORD: password
-    healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+      - SPRING_DATASOURCE_USERNAME=username
+      - SPRING_DATASOURCE_PASSWORD=password
+      - SPRING_DATASOURCE_URL=jdbc:h2:mem:resource
+    depends_on:
+      - ewm-client
+    ports:
+      - "9090:9090"
