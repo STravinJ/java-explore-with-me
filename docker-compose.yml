@@ -8,9 +8,9 @@ services:
     depends_on:
       - stats-db
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://stats-db:5432/emw-stat
-      - POSTGRES_USER=emwuser
-      - POSTGRES_PASSWORD=emwuser
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://stats-db:5432/ewm-stat
+      - POSTGRES_USER=ewmuser
+      - POSTGRES_PASSWORD=ewmuser
 
   stats-db:
     image: postgres:14-alpine
@@ -18,30 +18,30 @@ services:
     ports:
       - "6545:5432"
     environment:
-      - POSTGRES_DB=emw-stat
-      - POSTGRES_USER=emwuser
-      - POSTGRES_PASSWORD=emwuser
+      - POSTGRES_DB=ewm-stat
+      - POSTGRES_USER=ewmuser
+      - POSTGRES_PASSWORD=ewmuser
 
   ewm-service:
     build: ewm-service
-    container_name: emw-service
+    container_name: ewm-service
     ports:
       - "8080:8080"
     depends_on:
       - ewm-db
       - stats-server
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://emw-db:5432/emw-main
-      - POSTGRES_USER=emwuser
-      - POSTGRES_PASSWORD=emwuser
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://ewm-db:5432/ewm-main
+      - POSTGRES_USER=ewmuser
+      - POSTGRES_PASSWORD=ewmuser
       - stat-server.url=http://stats-server:9090
 
   ewm-db:
     image: postgres:14-alpine
-    container_name: emw-db
+    container_name: ewm-db
     ports:
       - "6547:5432"
     environment:
-      - POSTGRES_DB=emw-main
-      - POSTGRES_USER=emwuser
-      - POSTGRES_PASSWORD=emwuser
+      - POSTGRES_DB=ewm-main
+      - POSTGRES_USER=ewmuser
+      - POSTGRES_PASSWORD=ewmuser
