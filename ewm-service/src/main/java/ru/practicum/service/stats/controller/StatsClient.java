@@ -1,6 +1,6 @@
 package ru.practicum.service.stats.controller;
 
-import client.BaseClient;
+import ru.practicum.service.utils.BaseClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
