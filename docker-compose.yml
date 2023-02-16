@@ -1,45 +1,48 @@
 version: '3.1'
 services:
-  ewm-client:
-    build: ewm-client
-    image: amazoncorretto:11-alpine-jdk
-    container_name: ewm-client
-    environment:
-      - EXPLORE-WITH-ME-SERVICE_URL=http://service:9091/explore-with-me-service
-
+  stats-server:
+    build: stats-server
+    container_name: stats-server
     ports:
-      - "8080:8080"
+      - "9090:9090"
+    depends_on:
+      - stats-db
+      - ewm-service
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://stats-db:5432/ewm-stat
+      - POSTGRES_USER=ewmuser
+      - POSTGRES_PASSWORD=ewmuser
 
+  stats-db:
+    image: postgres:14-alpine
+    container_name: stats-db
+    ports:
+      - "6545:5432"
+    environment:
+      - POSTGRES_DB=ewm-stat
+      - POSTGRES_USER=ewmuser
+      - POSTGRES_PASSWORD=ewmuser
 
   ewm-service:
     build: ewm-service
-    image: amazoncorretto:11-alpine-jdk
     container_name: ewm-service
-    environment:
-      - EXPLORE-WITH-ME-STATISTICS_URL=http://stats:9090
-      - SPRING_DATASOURCE_USERNAME=username
-      - SPRING_DATASOURCE_PASSWORD=password
-      - SPRING_DATASOURCE_URL=jdbc:h2:mem:resource
-    depends_on:
-      - ewm-client
     ports:
-      - "9091:9091"
+      - "8080:8080"
+    depends_on:
+      - ewm-db
+      - stats-server
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://ewm-db:5432/ewm-main
+      - POSTGRES_USER=ewmuser
+      - POSTGRES_PASSWORD=ewmuser
+      - stat-server.url=http://stats-server:9090
 
   ewm-db:
     image: postgres:14-alpine
-
-  stats_db:
-    image: postgres:14-alpine
-
-  stats-server:
-    build: stats-server
-    image: amazoncorretto:11-alpine-jdk
-    container_name: stats-server
-    environment:
-      - SPRING_DATASOURCE_USERNAME=username
-      - SPRING_DATASOURCE_PASSWORD=password
-      - SPRING_DATASOURCE_URL=jdbc:h2:mem:resource
-    depends_on:
-      - ewm-client
+    container_name: ewm-db
     ports:
-      - "9090:9090"
+      - "6547:5432"
+    environment:
+      - POSTGRES_DB=ewm-main
+      - POSTGRES_USER=ewmuser
+      - POSTGRES_PASSWORD=ewmuser
