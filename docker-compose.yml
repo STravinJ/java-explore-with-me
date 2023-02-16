@@ -1,7 +1,7 @@
 version: '3.8'
 services:
   stats-server:
-    build: ./stats
+    build: ./stats_server
     container_name: stats_server
     restart: always
     ports:
@@ -34,8 +34,8 @@ services:
       retries: 5
 
   ewm-service:
-    build: ./main
-    container_name: main_server
+    build: ./ewm-service
+    container_name: ewm-service
     restart: always
     ports:
       - "8080:8080"
