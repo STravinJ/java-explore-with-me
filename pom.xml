@@ -6,6 +6,7 @@
 	<modules>
 		<module>stats-server</module>
 		<module>ewm-service</module>
+		<module>ewm-client</module>
 	</modules>
 
 	<parent>

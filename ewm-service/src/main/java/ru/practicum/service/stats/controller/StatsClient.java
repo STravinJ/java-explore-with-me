@@ -1,12 +1,12 @@
 package ru.practicum.service.stats.controller;
 
-import ru.practicum.service.utils.BaseClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import ru.practicum.service.stats.dto.StatInDto;
+import ru.practicum.service.utils.BaseClient;
 
 import java.util.List;
 import java.util.Map;

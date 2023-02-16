@@ -37,7 +37,7 @@ public interface EventsRepository extends JpaRepository<Event, Long> {
     void incrementViews(Long eventId);
 
     @Query("SELECT e FROM Event e " +
-            " WHERE e.state = ru.practicum.ewm.model.EventState.PUBLISHED " +
+            " WHERE e.state = ru.practicum.service.events.model.EventState.PUBLISHED " +
             " AND (e.annotation LIKE CONCAT('%',:text,'%') OR e.description LIKE CONCAT('%',:text,'%')) " +
             " AND e.category.id IN :categories " +
             " AND e.paid = :paid " +

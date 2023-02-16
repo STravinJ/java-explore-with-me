@@ -15,8 +15,8 @@ public interface RequestsRepository extends JpaRepository<Request, Long> {
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Transactional
     @Query("UPDATE Request r " +
-            " SET r.status = ru.practicum.ewm.model.RequestState.REJECTED " +
-            " WHERE r.event.id = :eventId AND r.status = ru.practicum.ewm.model.RequestState.PENDING " +
+            " SET r.status = ru.practicum.service.requests.model.RequestState.REJECTED " +
+            " WHERE r.event.id = :eventId AND r.status = ru.practicum.service.requests.model.RequestState.PENDING " +
             " ")
     void rejectAllPendingRequest(Long eventId);
 
