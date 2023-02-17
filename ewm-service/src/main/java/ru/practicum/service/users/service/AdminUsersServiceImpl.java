@@ -34,6 +34,11 @@ public class AdminUsersServiceImpl implements AdminUsersService {
     }
 
     @Override
+    public boolean existById(Long userId) {
+        return usersRepository.existsById(userId);
+    }
+
+    @Override
     public void deleteUserById(Long userId) throws UserNotFoundException {
         if (!usersRepository.existsById(userId)) {
             throw new UserNotFoundException("User with was not found.");

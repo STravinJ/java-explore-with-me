@@ -40,9 +40,9 @@ public class RequestsServiceImpl implements RequestsService {
         if (event.getInitiator().getId().equals(userId)) {
             throw new UserRequestHimselfException("User can't request himself.");
         }
-        if (event.getState() != EventState.PUBLISHED) {
-            throw new IllegalStateException("Event don't PUBLISHED.");
-        }
+        //if (event.getState() != EventState.PUBLISHED) {
+          //  throw new IllegalStateException("Event don't PUBLISHED.");
+        //}
         if (event.getParticipantLimit() != 0 && (event.getParticipantLimit() - event.getConfirmedRequests()) <= 0) {
             throw new IllegalStateException("Event don't have any free slot.");
         }

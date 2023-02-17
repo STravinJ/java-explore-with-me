@@ -50,16 +50,16 @@ public class AdminEventsController {
         return adminEventsService.publishEvent(eventId);
     }
 
-    @PatchMapping("{eventId}/reject")
+    @PatchMapping("/{eventId}/reject")
     public EventOutDto rejectEvent(@Positive @PathVariable Long eventId)
             throws EventNotFoundException, EventClosedException {
         log.info("Admin Patch rejectEvent: {}", eventId);
         return adminEventsService.rejectEvent(eventId);
     }
 
-    @PutMapping("{eventId}")
-    public EventOutDto updateEvent(@Positive @PathVariable Long eventId,
-                                   @Valid @RequestBody EventInDto eventInDto)
+    @PatchMapping("/{eventId}")
+    public EventOutDto updateEvent(@PathVariable Long eventId,
+                                   @RequestBody EventInDto eventInDto)
             throws EventNotFoundException, CategoryNotFoundException {
         log.info("Admin Put updateEvent: {},{}", eventId, eventInDto);
         return adminEventsService.updateEvent(eventId, eventInDto);

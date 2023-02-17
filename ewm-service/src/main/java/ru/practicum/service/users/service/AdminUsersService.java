@@ -10,5 +10,7 @@ public interface AdminUsersService {
 
     List<UserDto> findAll(Long[] ids, Integer from, Integer size);
 
+    boolean existById(Long userId);
+
     void deleteUserById(Long userId) throws UserNotFoundException;
 }

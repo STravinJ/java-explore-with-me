@@ -18,6 +18,7 @@ import ru.practicum.service.events.exceptions.EventClosedException;
 import ru.practicum.service.events.exceptions.EventNotFoundException;
 import ru.practicum.service.requests.exceptions.RequestNotFoundException;
 import ru.practicum.service.users.exceptions.UserNotFoundException;
+import ru.practicum.service.users.exceptions.UserRequestHimselfException;
 
 import java.nio.file.AccessDeniedException;
 import java.security.InvalidParameterException;
