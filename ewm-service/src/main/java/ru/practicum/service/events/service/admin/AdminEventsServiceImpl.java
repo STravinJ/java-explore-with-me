@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.service.categories.exceptions.CategoryNotFoundException;
 import ru.practicum.service.categories.repository.CategoriesRepository;
-import ru.practicum.service.events.Utils;
+import ru.practicum.service.utils.Utils;
 import ru.practicum.service.events.dto.EventInDto;
 import ru.practicum.service.events.dto.EventOutDto;
 import ru.practicum.service.events.exceptions.EventClosedException;
@@ -35,7 +35,13 @@ public class AdminEventsServiceImpl implements AdminEventsService {
     @Override
     public List<EventOutDto> findAllEvents(Long[] users, String[] states, Long[] categories, String rangeStart, String rangeEnd, Integer from, Integer size) throws UserNotFoundException, CategoryNotFoundException {
         checkUsersExitOrThrow(users);
-        checkCategoriesExitOrThrow(categories);
+
+        if (categories != null) {
+            checkCategoriesExitOrThrow(categories);
+        } else {
+            categories = new Long[0];
+        }
+
         List<EventState> stateList;
         if (states != null) {
             stateList = checkStatesCorrectOrThrow(states);

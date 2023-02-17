@@ -12,43 +12,21 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import ru.practicum.service.categories.controller.admin.AdminCategoriesController;
-import ru.practicum.service.categories.controller.pub.PublicCategoriesController;
 import ru.practicum.service.categories.exceptions.CategoryNotFoundException;
-import ru.practicum.service.compilations.controller.admin.AdminCompilationsController;
-import ru.practicum.service.compilations.controller.pub.PublicCompilationsController;
 import ru.practicum.service.compilations.exceptions.CompilationNotFoundException;
-import ru.practicum.service.events.controller.admin.AdminEventsController;
-import ru.practicum.service.events.controller.pub.PublicEventsController;
-import ru.practicum.service.events.controller.user.UsersEventsController;
 import ru.practicum.service.events.exceptions.EventClosedException;
 import ru.practicum.service.events.exceptions.EventNotFoundException;
-import ru.practicum.service.requests.controller.UsersEventsRequestsController;
-import ru.practicum.service.requests.controller.UsersRequestsController;
 import ru.practicum.service.requests.exceptions.RequestNotFoundException;
-import ru.practicum.service.users.controller.admin.AdminUsersController;
 import ru.practicum.service.users.exceptions.UserNotFoundException;
-import ru.practicum.service.users.exceptions.UserRequestHimselfException;
 
 import java.nio.file.AccessDeniedException;
 import java.security.InvalidParameterException;
 import java.time.LocalDateTime;
 
-@RestControllerAdvice(
-        assignableTypes = {
-                AdminUsersController.class,
-                AdminCategoriesController.class,
-                AdminCompilationsController.class,
-                AdminEventsController.class,
-                UsersEventsController.class,
-                UsersRequestsController.class,
-                UsersEventsRequestsController.class,
-                PublicCategoriesController.class,
-                PublicCompilationsController.class,
-                PublicEventsController.class
-        })
+@RestControllerAdvice
 @Slf4j
 public class ErrorHandler {
+
     private ErrorResponse errorResponse;
 
     @ExceptionHandler({
@@ -81,15 +59,16 @@ public class ErrorHandler {
                 Constants.DATE_TIME_SPACE.format(LocalDateTime.now()));
     }
 
-    @ExceptionHandler({
-            IllegalArgumentException.class,
-            IllegalStateException.class,
-            UserRequestHimselfException.class
-    })
+    @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleArgumentBadRequest(final Exception e) {
+    public ErrorMessage handleArgumentBadRequest(final Exception e) {
         log.info("Error handleArgumentBadRequest: {}", e.getMessage());
-        return new ErrorResponse(e.getMessage());
+        return new ErrorMessage(
+                e.getClass().getSimpleName(),
+                e.getMessage(),
+                "",
+                "BAD_REQUEST",
+                Constants.DATE_TIME_SPACE.format(LocalDateTime.now()));
     }
 
     @ExceptionHandler({

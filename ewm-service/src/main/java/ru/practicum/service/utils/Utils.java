@@ -1,4 +1,4 @@
-package ru.practicum.service.events;
+package ru.practicum.service.utils;
 
 import ru.practicum.service.categories.exceptions.CategoryNotFoundException;
 import ru.practicum.service.categories.repository.CategoriesRepository;

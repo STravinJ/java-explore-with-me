@@ -2,6 +2,7 @@ package ru.practicum.service.categories.controller.admin;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.sql.Update;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.service.categories.dto.CategoryFullDto;
@@ -22,7 +23,7 @@ public class AdminCategoriesController {
     private final AdminCategoriesService adminCategoriesService;
 
     @PatchMapping
-    public CategoryFullDto updateCategory(@Valid @RequestBody CategoryFullDto categoryFullDto) throws CategoryNotFoundException {
+    public CategoryFullDto updateCategory(@RequestBody @Validated(Update.class) CategoryFullDto categoryFullDto) throws CategoryNotFoundException {
         log.info("Admin updateCategory: {}", categoryFullDto);
         return adminCategoriesService.updateCategory(categoryFullDto);
     }

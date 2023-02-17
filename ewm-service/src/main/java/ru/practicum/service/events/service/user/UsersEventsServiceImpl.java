@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.service.categories.exceptions.CategoryNotFoundException;
 import ru.practicum.service.categories.repository.CategoriesRepository;
-import ru.practicum.service.events.Utils;
+import ru.practicum.service.utils.Utils;
 import ru.practicum.service.events.dto.EventInDto;
 import ru.practicum.service.events.dto.EventOutDto;
 import ru.practicum.service.events.exceptions.EventClosedException;
@@ -118,7 +118,7 @@ public class UsersEventsServiceImpl implements UsersEventsService {
         if (event.getState() != EventState.PENDING) {
             throw new EventClosedException("Event is not pending.");
         }
-        event.setState(EventState.CANCELED);
+        //event.setState(EventState.CANCELED);
 
         return EventMapper.eventToOutDto(eventsRepository.saveAndFlush(event));
     }
