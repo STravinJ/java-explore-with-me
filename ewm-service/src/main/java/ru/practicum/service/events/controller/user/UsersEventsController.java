@@ -2,6 +2,7 @@ package ru.practicum.service.events.controller.user;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.service.categories.exceptions.CategoryNotFoundException;
@@ -26,6 +27,7 @@ import java.util.List;
 public class UsersEventsController {
     private final UsersEventsService usersEventsService;
 
+    @ResponseStatus(value = HttpStatus.CREATED)
     @PostMapping
     public EventOutDto addEvent(@Positive @PathVariable Long userId, @Valid @RequestBody EventInDto eventInDto)
             throws CategoryNotFoundException, UserNotFoundException {

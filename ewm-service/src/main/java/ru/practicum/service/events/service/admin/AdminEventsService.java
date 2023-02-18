@@ -3,6 +3,7 @@ package ru.practicum.service.events.service.admin;
 import ru.practicum.service.categories.exceptions.CategoryNotFoundException;
 import ru.practicum.service.events.dto.EventInDto;
 import ru.practicum.service.events.dto.EventOutDto;
+import ru.practicum.service.events.exceptions.DateException;
 import ru.practicum.service.events.exceptions.EventClosedException;
 import ru.practicum.service.events.exceptions.EventNotFoundException;
 import ru.practicum.service.users.exceptions.UserNotFoundException;
@@ -16,5 +17,5 @@ public interface AdminEventsService {
 
     EventOutDto rejectEvent(Long eventId) throws EventClosedException, EventNotFoundException;
 
-    EventOutDto updateEvent(Long eventId, EventInDto eventInDto) throws EventNotFoundException, CategoryNotFoundException;
+    EventOutDto updateEvent(Long eventId, EventInDto eventInDto) throws EventNotFoundException, CategoryNotFoundException, DateException;
 }

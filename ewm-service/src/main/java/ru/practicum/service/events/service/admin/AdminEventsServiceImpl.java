@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.service.categories.exceptions.CategoryNotFoundException;
 import ru.practicum.service.categories.repository.CategoriesRepository;
+import ru.practicum.service.events.exceptions.DateException;
 import ru.practicum.service.utils.Utils;
 import ru.practicum.service.events.dto.EventInDto;
 import ru.practicum.service.events.dto.EventOutDto;
@@ -123,11 +124,14 @@ public class AdminEventsServiceImpl implements AdminEventsService {
 
     @Override
     @Transactional
-    public EventOutDto updateEvent(Long eventId, EventInDto eventInDto) throws EventNotFoundException, CategoryNotFoundException {
+    public EventOutDto updateEvent(Long eventId, EventInDto eventInDto) throws EventNotFoundException, CategoryNotFoundException, DateException {
         Event event = eventsRepository.findById(eventId).orElseThrow(
                 () -> new EventNotFoundException("Event ID not found.")
         );
         if (eventInDto.getEventDate() != null) {
+            if (eventInDto.getEventDate().isBefore(LocalDateTime.now())) {
+                throw new DateException("Event date in past.");
+            }
             event.setEventDate(eventInDto.getEventDate());
         }
         Utils.setNotNullParamToEntity(eventInDto, event, categoriesRepository);

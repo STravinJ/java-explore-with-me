@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.practicum.service.categories.exceptions.CategoryNotFoundException;
 import ru.practicum.service.compilations.exceptions.CompilationNotFoundException;
+import ru.practicum.service.events.exceptions.DateException;
 import ru.practicum.service.events.exceptions.EventClosedException;
 import ru.practicum.service.events.exceptions.EventNotFoundException;
 import ru.practicum.service.requests.exceptions.RequestNotFoundException;
@@ -44,7 +45,6 @@ public class ErrorHandler {
     }
 
     @ExceptionHandler({
-            DataIntegrityViolationException.class,
             MethodArgumentNotValidException.class,
             InvalidParameterException.class,
             MissingServletRequestParameterException.class
@@ -60,7 +60,11 @@ public class ErrorHandler {
                 Constants.DATE_TIME_SPACE.format(LocalDateTime.now()));
     }
 
-    @ExceptionHandler
+    @ExceptionHandler({
+            IllegalArgumentException.class,
+            IllegalStateException.class,
+            UserRequestHimselfException.class
+    })
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorMessage handleArgumentBadRequest(final Exception e) {
         log.info("Error handleArgumentBadRequest: {}", e.getMessage());
@@ -73,7 +77,10 @@ public class ErrorHandler {
     }
 
     @ExceptionHandler({
-            EventClosedException.class
+            EventClosedException.class,
+            AccessDeniedException.class,
+            DateException.class,
+            DataIntegrityViolationException.class
     })
     @ResponseStatus(HttpStatus.CONFLICT)
     public ErrorResponse handleDoubleData(final Exception e) {
@@ -81,9 +88,7 @@ public class ErrorHandler {
         return new ErrorResponse(e.getMessage());
     }
 
-    @ExceptionHandler({
-            AccessDeniedException.class
-    })
+    @ExceptionHandler
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public ErrorResponse handleForbidden(final Exception e) {
         log.info("Error handleForbidden: {}", e.getMessage());
@@ -120,4 +125,5 @@ public class ErrorHandler {
         private String status;
         private String timestamp;
     }
+
 }

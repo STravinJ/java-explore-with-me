@@ -7,7 +7,7 @@ import ru.practicum.service.categories.exceptions.CategoryNotFoundException;
 import java.nio.file.AccessDeniedException;
 
 public interface AdminCategoriesService {
-    CategoryFullDto updateCategory(CategoryFullDto categoryFullDto) throws CategoryNotFoundException;
+    CategoryFullDto updateCategory(Long catId, CategoryInDto categoryInDto) throws CategoryNotFoundException;
 
     CategoryFullDto addCategory(CategoryInDto categoryInDto);
 

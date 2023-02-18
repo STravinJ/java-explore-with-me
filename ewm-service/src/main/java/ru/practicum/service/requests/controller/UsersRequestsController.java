@@ -1,6 +1,7 @@
 package ru.practicum.service.requests.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.service.events.exceptions.EventNotFoundException;
@@ -46,6 +47,7 @@ public class UsersRequestsController {
         return usersEventsRequestsService.rejectRequest(userId, eventId, reqId);
     }
 
+    @ResponseStatus(value = HttpStatus.CREATED)
     @PostMapping("/requests")
     public RequestOutDto addRequest(@PathVariable Long userId,
                                     @RequestParam Long eventId)

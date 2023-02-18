@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.service.categories.exceptions.CategoryNotFoundException;
 import ru.practicum.service.events.dto.EventInDto;
 import ru.practicum.service.events.dto.EventOutDto;
+import ru.practicum.service.events.exceptions.DateException;
 import ru.practicum.service.events.exceptions.EventClosedException;
 import ru.practicum.service.events.exceptions.EventNotFoundException;
 import ru.practicum.service.events.service.admin.AdminEventsService;
@@ -43,8 +44,8 @@ public class AdminEventsController {
         return adminEventsService.findAllEvents(users, states, categories, rangeStart, rangeEnd, from, size);
     }
 
-    @PatchMapping("{eventId}/publish")
-    public EventOutDto publishEvent(@Positive @PathVariable Long eventId)
+    @PatchMapping("/{eventId}/publish")
+    public EventOutDto publishEvent(@PathVariable Long eventId)
             throws EventNotFoundException, EventClosedException {
         log.info("Admin publishEvent: {}", eventId);
         return adminEventsService.publishEvent(eventId);
@@ -60,8 +61,14 @@ public class AdminEventsController {
     @PatchMapping("/{eventId}")
     public EventOutDto updateEvent(@PathVariable Long eventId,
                                    @RequestBody EventInDto eventInDto)
-            throws EventNotFoundException, CategoryNotFoundException {
+            throws EventNotFoundException, CategoryNotFoundException, DateException, EventClosedException {
         log.info("Admin Put updateEvent: {},{}", eventId, eventInDto);
-        return adminEventsService.updateEvent(eventId, eventInDto);
+        if (eventInDto.getStateAction().equals("PUBLISH_EVENT")) {
+            return adminEventsService.publishEvent(eventId);
+        } else if (eventInDto.getStateAction().equals("REJECT_EVENT")) {
+            return adminEventsService.rejectEvent(eventId);
+        } else {
+            return adminEventsService.updateEvent(eventId, eventInDto);
+        }
     }
 }

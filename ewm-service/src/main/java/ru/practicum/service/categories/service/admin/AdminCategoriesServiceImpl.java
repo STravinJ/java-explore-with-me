@@ -9,7 +9,11 @@ import ru.practicum.service.categories.exceptions.CategoryNotFoundException;
 import ru.practicum.service.categories.mapper.CategoryMapper;
 import ru.practicum.service.categories.model.Category;
 import ru.practicum.service.categories.repository.CategoriesRepository;
+import ru.practicum.service.events.exceptions.EventNotFoundException;
+import ru.practicum.service.events.mapper.EventMapper;
+import ru.practicum.service.events.model.Event;
 import ru.practicum.service.events.repository.EventsRepository;
+import ru.practicum.service.utils.Utils;
 
 import java.nio.file.AccessDeniedException;
 
@@ -20,9 +24,11 @@ public class AdminCategoriesServiceImpl implements AdminCategoriesService {
     private final EventsRepository eventsRepository;
 
     @Override
-    public CategoryFullDto updateCategory(CategoryFullDto categoryFullDto) throws CategoryNotFoundException {
-        checkCategoryExists(categoryFullDto.getId());
-        Category category = CategoryMapper.dtoOutToCategory(categoryFullDto);
+    public CategoryFullDto updateCategory(Long catId, CategoryInDto categoryInDto) throws CategoryNotFoundException {
+        Category category = categoriesRepository.findById(catId).orElseThrow(
+                () -> new CategoryNotFoundException("Category ID not found.")
+        );
+        category.setName(categoryInDto.getName());
         return CategoryMapper.categoryToDtoOut(categoriesRepository.save(category));
     }
 

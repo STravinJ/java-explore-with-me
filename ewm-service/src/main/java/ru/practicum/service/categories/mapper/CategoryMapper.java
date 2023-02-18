@@ -16,10 +16,10 @@ public class CategoryMapper {
     }
 
     public static CategoryFullDto categoryToDtoOut(Category category) {
-        return new CategoryFullDto(
-                category.getId(),
-                category.getName()
-        );
+        CategoryFullDto categoryFullDto = new CategoryFullDto();
+        categoryFullDto.setId(category.getId());
+        categoryFullDto.setName(category.getName());
+        return categoryFullDto;
     }
 
     public static Category dtoInToCategory(CategoryInDto categoryInDto) {

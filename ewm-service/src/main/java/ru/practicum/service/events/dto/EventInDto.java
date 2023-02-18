@@ -7,10 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import ru.practicum.service.utils.Constants;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 import java.time.LocalDateTime;
 
 @Getter
@@ -31,8 +28,9 @@ public class EventInDto {
     @NotBlank
     @Size(min = 3, max = 120)
     private String title;
-    @NotNull
-    @JsonFormat(pattern = Constants.DATE_TIME_STRING)
+    private String stateAction;
+    @FutureOrPresent(message = "event date should be current or future")
+    @JsonFormat(shape= JsonFormat.Shape.STRING, pattern = "uuuu-MM-dd HH:mm:ss")
     private LocalDateTime eventDate;
     private Boolean paid;
     @Positive

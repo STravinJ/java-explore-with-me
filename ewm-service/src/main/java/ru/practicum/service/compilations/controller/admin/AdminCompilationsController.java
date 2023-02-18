@@ -2,6 +2,7 @@ package ru.practicum.service.compilations.controller.admin;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.service.compilations.dto.CompilationInDto;
@@ -21,6 +22,7 @@ import javax.validation.constraints.Positive;
 public class AdminCompilationsController {
     private final AdminCompilationsService adminCompilationsService;
 
+    @ResponseStatus(value = HttpStatus.CREATED)
     @PostMapping
     public CompilationOutDto addCompilation(@Valid @RequestBody CompilationInDto compilationInDto) {
         log.info("Admin addCompilation: {}", compilationInDto);
@@ -51,6 +53,7 @@ public class AdminCompilationsController {
         return adminCompilationsService.addEventToCompilation(compId, eventId);
     }
 
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
     @DeleteMapping("{compId}/pin")
     public void unPinCompilation(
             @Positive @PathVariable Long compId
