@@ -33,7 +33,7 @@ public class EventMapper {
                 .initiator(UserMapper.userToDto(event.getInitiator()))
                 .location(LocationMapper.locationToDto(event.getLocation()))
                 .title(event.getTitle())
-                .confirmedRequests(event.getConfirmedRequests())
+                //.confirmedRequests(event.getConfirmedRequests())
                 .createdOn(event.getCreatedOn())
                 .description(event.getDescription())
                 .eventDate(event.getEventDate())

@@ -72,6 +72,9 @@ public class UsersEventsRequestsServiceImpl implements UsersEventsRequestsServic
         if (!request.getEvent().getInitiator().getId().equals(userId)) {
             throw new AccessDeniedException("Only owner of Event can Reject Request.");
         }
+        if (request.getStatus().equals(RequestState.CONFIRMED)) {
+            throw new AccessDeniedException("The Request is already confirmed.");
+        }
         request.setStatus(RequestState.REJECTED);
         return RequestMapper.requestToOutDto(requestsRepository.saveAndFlush(request));
     }
