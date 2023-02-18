@@ -43,7 +43,6 @@ public class UsersRequestsController {
             requestOutDtoList.add(usersEventsRequestsService.confirmRequest(userId, eventId, reqId));
         }
         return requestOutDtoList;
-   
     }
 
     @PatchMapping("/events/{eventId}/requests/{reqId}/confirm")
