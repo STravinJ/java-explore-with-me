@@ -7,7 +7,9 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.service.categories.exceptions.CategoryNotFoundException;
 import ru.practicum.service.events.dto.EventInDto;
+import ru.practicum.service.events.dto.EventInDtoStateAction;
 import ru.practicum.service.events.dto.EventOutDto;
+import ru.practicum.service.events.exceptions.DateException;
 import ru.practicum.service.events.exceptions.EventClosedException;
 import ru.practicum.service.events.exceptions.EventNotFoundException;
 import ru.practicum.service.events.service.user.UsersEventsService;
@@ -30,7 +32,7 @@ public class UsersEventsController {
     @ResponseStatus(value = HttpStatus.CREATED)
     @PostMapping
     public EventOutDto addEvent(@Positive @PathVariable Long userId, @Valid @RequestBody EventInDto eventInDto)
-            throws CategoryNotFoundException, UserNotFoundException {
+            throws CategoryNotFoundException, UserNotFoundException, DateException {
         log.info("User addEvent: {},{}", userId, eventInDto);
         return usersEventsService.addEvent(userId, eventInDto);
     }
@@ -41,7 +43,7 @@ public class UsersEventsController {
             CategoryNotFoundException,
             UserNotFoundException,
             EventNotFoundException,
-            EventClosedException {
+            EventClosedException, DateException {
         log.info("User updateEvent: {},{}", userId, eventInDto);
         return usersEventsService.updateEvent(userId, eventInDto);
     }
@@ -67,10 +69,21 @@ public class UsersEventsController {
 
     @PatchMapping("{eventId}")
     public EventOutDto cancelEvent(@Positive @PathVariable Long userId,
-                                   @Positive @PathVariable Long eventId)
-            throws UserNotFoundException, EventNotFoundException, EventClosedException {
+                                   @Positive @PathVariable Long eventId,
+                                   @RequestBody EventInDtoStateAction eventInDtoStateAction)
+            throws
+            CategoryNotFoundException,
+            UserNotFoundException,
+            EventNotFoundException,
+            EventClosedException, DateException {
         log.info("User cancelEvent: {},{}", userId, eventId);
-        return usersEventsService.cancelEvent(userId, eventId);
+        if (eventInDtoStateAction.getStateAction().equals("CANCEL_REVIEW")) {
+            return usersEventsService.cancelEvent(userId, eventId);
+        } else {
+            EventInDto eventInDto = new EventInDto();
+            eventInDto.setEventId(eventId);
+            return usersEventsService.updateEvent(userId, eventInDto);
+        }
     }
 
 }

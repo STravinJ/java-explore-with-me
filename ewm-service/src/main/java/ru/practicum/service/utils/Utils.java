@@ -3,15 +3,15 @@ package ru.practicum.service.utils;
 import ru.practicum.service.categories.exceptions.CategoryNotFoundException;
 import ru.practicum.service.categories.repository.CategoriesRepository;
 import ru.practicum.service.events.dto.EventInDto;
+import ru.practicum.service.events.exceptions.DateException;
 import ru.practicum.service.events.model.Event;
 
-import java.security.InvalidParameterException;
 import java.time.LocalDateTime;
 
 public class Utils {
-    public static void checkTimeBeforeOrThrow(LocalDateTime eventDate, int hours) {
+    public static void checkTimeBeforeOrThrow(LocalDateTime eventDate, int hours) throws DateException {
         if (eventDate.isBefore(LocalDateTime.now().plusHours(hours))) {
-            throw new InvalidParameterException("Event Time must be, late then " + hours + " hours.");
+            throw new DateException("Event Time must be, late then " + hours + " hours.");
         }
     }
 

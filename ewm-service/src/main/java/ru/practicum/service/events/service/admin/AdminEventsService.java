@@ -13,7 +13,7 @@ import java.util.List;
 public interface AdminEventsService {
     List<EventOutDto> findAllEvents(Long[] users, String[] states, Long[] categories, String rangeStart, String rangeEnd, Integer from, Integer size) throws UserNotFoundException, CategoryNotFoundException;
 
-    EventOutDto publishEvent(Long eventId) throws EventClosedException, EventNotFoundException;
+    EventOutDto publishEvent(Long eventId) throws EventClosedException, EventNotFoundException, DateException;
 
     EventOutDto rejectEvent(Long eventId) throws EventClosedException, EventNotFoundException;
 

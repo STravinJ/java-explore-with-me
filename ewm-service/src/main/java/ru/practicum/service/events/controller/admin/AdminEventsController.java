@@ -45,7 +45,7 @@ public class AdminEventsController {
 
     @PatchMapping("/{eventId}/publish")
     public EventOutDto publishEvent(@PathVariable Long eventId)
-            throws EventNotFoundException, EventClosedException {
+            throws EventNotFoundException, EventClosedException, DateException {
         log.info("Admin publishEvent: {}", eventId);
         return adminEventsService.publishEvent(eventId);
     }
@@ -63,8 +63,10 @@ public class AdminEventsController {
             throws EventNotFoundException, CategoryNotFoundException, DateException, EventClosedException {
         log.info("Admin Put updateEvent: {},{}", eventId, eventInDto);
         if (eventInDto.getStateAction().equals("PUBLISH_EVENT")) {
+            adminEventsService.updateEvent(eventId, eventInDto);
             return adminEventsService.publishEvent(eventId);
         } else if (eventInDto.getStateAction().equals("REJECT_EVENT")) {
+            adminEventsService.updateEvent(eventId, eventInDto);
             return adminEventsService.rejectEvent(eventId);
         } else {
             return adminEventsService.updateEvent(eventId, eventInDto);

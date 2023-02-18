@@ -24,7 +24,7 @@ public class AdminCategoriesController {
 
     @PatchMapping("/{catid}")
     public CategoryFullDto updateCategory(@PathVariable long catid,
-            @RequestBody CategoryInDto categoryInDto) throws CategoryNotFoundException {
+                                          @Valid @RequestBody CategoryInDto categoryInDto) throws CategoryNotFoundException {
         log.info("Admin updateCategory: {}", categoryInDto);
         return adminCategoriesService.updateCategory(catid, categoryInDto);
     }

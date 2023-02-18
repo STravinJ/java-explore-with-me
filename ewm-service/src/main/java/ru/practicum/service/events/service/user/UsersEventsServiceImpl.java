@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.service.categories.exceptions.CategoryNotFoundException;
 import ru.practicum.service.categories.repository.CategoriesRepository;
+import ru.practicum.service.events.exceptions.DateException;
 import ru.practicum.service.utils.Utils;
 import ru.practicum.service.events.dto.EventInDto;
 import ru.practicum.service.events.dto.EventOutDto;
@@ -24,6 +25,7 @@ import ru.practicum.service.utils.Constants;
 
 import java.nio.file.AccessDeniedException;
 import java.security.InvalidParameterException;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -36,7 +38,7 @@ public class UsersEventsServiceImpl implements UsersEventsService {
 
     @Override
     @Transactional
-    public EventOutDto addEvent(Long userId, EventInDto eventInDto) throws CategoryNotFoundException, UserNotFoundException {
+    public EventOutDto addEvent(Long userId, EventInDto eventInDto) throws CategoryNotFoundException, UserNotFoundException, DateException {
         if (!categoriesRepository.existsById(eventInDto.getCategory())) {
             throw new CategoryNotFoundException("Category ID not found.");
         }
@@ -62,7 +64,7 @@ public class UsersEventsServiceImpl implements UsersEventsService {
     @Override
     @Transactional
     public EventOutDto updateEvent(Long userId, EventInDto eventInDto)
-            throws CategoryNotFoundException, UserNotFoundException, EventNotFoundException, EventClosedException {
+            throws CategoryNotFoundException, UserNotFoundException, EventNotFoundException, EventClosedException, DateException {
         if (!usersRepository.existsById(userId)) {
             throw new UserNotFoundException("User ID not found.");
         }
@@ -75,8 +77,10 @@ public class UsersEventsServiceImpl implements UsersEventsService {
         } else if (event.getState() == EventState.CANCELED) {
             event.setState(EventState.PENDING);
         }
-
         if (eventInDto.getEventDate() != null) {
+            if (eventInDto.getEventDate().isBefore(LocalDateTime.now())) {
+                throw new DateException("Event date in past.");
+            }
             event.setEventDate(eventInDto.getEventDate());
         }
         Utils.checkTimeBeforeOrThrow(event.getEventDate(), Constants.USER_TIME_HOUR_BEFORE_START);
@@ -118,7 +122,7 @@ public class UsersEventsServiceImpl implements UsersEventsService {
         if (event.getState() != EventState.PENDING) {
             throw new EventClosedException("Event is not pending.");
         }
-        //event.setState(EventState.CANCELED);
+        event.setState(EventState.CANCELED);
 
         return EventMapper.eventToOutDto(eventsRepository.saveAndFlush(event));
     }

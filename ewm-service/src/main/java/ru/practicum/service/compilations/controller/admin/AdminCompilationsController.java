@@ -29,12 +29,14 @@ public class AdminCompilationsController {
         return adminCompilationsService.addCompilation(compilationInDto);
     }
 
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
     @DeleteMapping("{compId}")
     public void removeCompilation(@Positive @PathVariable Long compId) throws CompilationNotFoundException {
         log.info("Admin removeCompilation: {}", compId);
         adminCompilationsService.removeCompilation(compId);
     }
 
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
     @DeleteMapping("{compId}/events/{eventId}")
     public void removeEventFromCompilation(
             @Positive @PathVariable Long compId,
@@ -44,7 +46,16 @@ public class AdminCompilationsController {
         adminCompilationsService.removeEventFromCompilation(compId, eventId);
     }
 
-    @PatchMapping("{compId}/events/{eventId}")
+    @PatchMapping("{compId}")
+    public CompilationOutDto addEventToCompilation(
+            @PathVariable Long compId,
+            @RequestBody CompilationInDto compilationInDto
+    ) throws CompilationNotFoundException, EventNotFoundException {
+        log.info("Admin addEventToCompilation: {},{}", compId, compilationInDto);
+        return adminCompilationsService.addEventToCompilationDto(compId, compilationInDto);
+    }
+
+    @PatchMapping("/{compId}/events/{eventId}")
     public CompilationOutDto addEventToCompilation(
             @Positive @PathVariable Long compId,
             @Positive @PathVariable Long eventId

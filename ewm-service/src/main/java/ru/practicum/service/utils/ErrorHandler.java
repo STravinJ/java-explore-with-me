@@ -21,6 +21,7 @@ import ru.practicum.service.requests.exceptions.RequestNotFoundException;
 import ru.practicum.service.users.exceptions.UserNotFoundException;
 import ru.practicum.service.users.exceptions.UserRequestHimselfException;
 
+import javax.validation.UnexpectedTypeException;
 import java.nio.file.AccessDeniedException;
 import java.security.InvalidParameterException;
 import java.time.LocalDateTime;
@@ -47,6 +48,7 @@ public class ErrorHandler {
     @ExceptionHandler({
             MethodArgumentNotValidException.class,
             InvalidParameterException.class,
+            UnexpectedTypeException.class,
             MissingServletRequestParameterException.class
     })
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -61,9 +63,7 @@ public class ErrorHandler {
     }
 
     @ExceptionHandler({
-            IllegalArgumentException.class,
-            IllegalStateException.class,
-            UserRequestHimselfException.class
+            IllegalArgumentException.class
     })
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorMessage handleArgumentBadRequest(final Exception e) {
@@ -80,7 +80,10 @@ public class ErrorHandler {
             EventClosedException.class,
             AccessDeniedException.class,
             DateException.class,
-            DataIntegrityViolationException.class
+            IllegalStateException.class,
+            NullPointerException.class,
+            DataIntegrityViolationException.class,
+            UserRequestHimselfException.class
     })
     @ResponseStatus(HttpStatus.CONFLICT)
     public ErrorResponse handleDoubleData(final Exception e) {

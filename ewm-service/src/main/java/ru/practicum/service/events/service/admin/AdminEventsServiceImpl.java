@@ -97,7 +97,7 @@ public class AdminEventsServiceImpl implements AdminEventsService {
     }
 
     @Override
-    public EventOutDto publishEvent(Long eventId) throws EventClosedException, EventNotFoundException {
+    public EventOutDto publishEvent(Long eventId) throws EventClosedException, EventNotFoundException, DateException {
         Event event = eventsRepository.findById(eventId).orElseThrow(
                 () -> new EventNotFoundException("Event ID not found.")
         );

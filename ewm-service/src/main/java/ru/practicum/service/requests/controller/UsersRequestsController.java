@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.service.events.exceptions.EventNotFoundException;
+import ru.practicum.service.requests.dto.RequestInDto;
 import ru.practicum.service.requests.dto.RequestOutDto;
 import ru.practicum.service.requests.exceptions.RequestNotFoundException;
 import ru.practicum.service.requests.service.RequestsService;
@@ -14,6 +15,7 @@ import ru.practicum.service.users.exceptions.UserRequestHimselfException;
 
 import javax.validation.constraints.Positive;
 import java.nio.file.AccessDeniedException;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -29,6 +31,19 @@ public class UsersRequestsController {
                                                     @Positive @PathVariable Long eventId)
             throws UserNotFoundException, EventNotFoundException {
         return usersEventsRequestsService.findAllEventRequests(userId, eventId);
+    }
+
+    @PatchMapping("/events/{eventId}/requests")
+    public List<RequestOutDto> findAllEventRequests(@Positive @PathVariable Long userId,
+                                                    @Positive @PathVariable Long eventId,
+                                                    @RequestBody RequestInDto requestInDto)
+            throws UserNotFoundException, AccessDeniedException, RequestNotFoundException {
+        List<RequestOutDto> requestOutDtoList = new ArrayList<>();
+        for (Long reqId : requestInDto.getRequestIds()) {
+            requestOutDtoList.add(usersEventsRequestsService.confirmRequest(userId, eventId, reqId));
+        }
+        return requestOutDtoList;
+   
     }
 
     @PatchMapping("/events/{eventId}/requests/{reqId}/confirm")

@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.service.events.exceptions.EventNotFoundException;
 import ru.practicum.service.events.model.Event;
+import ru.practicum.service.events.model.EventState;
 import ru.practicum.service.events.repository.EventsRepository;
 import ru.practicum.service.requests.dto.RequestOutDto;
 import ru.practicum.service.requests.exceptions.RequestNotFoundException;
@@ -41,6 +42,9 @@ public class RequestsServiceImpl implements RequestsService {
         }
         if (event.getParticipantLimit() != 0 && (event.getParticipantLimit() - event.getConfirmedRequests()) <= 0) {
             throw new IllegalStateException("Event don't have any free slot.");
+        }
+        if (!event.getState().equals(EventState.PUBLISHED)) {
+            throw new IllegalStateException("Event must be PUBLISHED.");
         }
 
         RequestState newRequestState = RequestState.PENDING;

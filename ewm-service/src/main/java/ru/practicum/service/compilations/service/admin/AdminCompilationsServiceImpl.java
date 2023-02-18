@@ -13,6 +13,8 @@ import ru.practicum.service.events.exceptions.EventNotFoundException;
 import ru.practicum.service.events.model.Event;
 import ru.practicum.service.events.repository.EventsRepository;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class AdminCompilationsServiceImpl implements AdminCompilationsService {
@@ -57,6 +59,23 @@ public class AdminCompilationsServiceImpl implements AdminCompilationsService {
                 () -> new EventNotFoundException("Event ID: " + eventId + " not found.")
         );
         compilation.getEvents().add(event);
+        compilationsRepository.flush();
+
+        return CompilationMapper.compilationToOutDto(compilation);
+    }
+
+    @Override
+    public CompilationOutDto addEventToCompilationDto(Long compId, CompilationInDto compilationInDto) throws CompilationNotFoundException, EventNotFoundException {
+        Compilation compilation = compilationsRepository.findById(compId).orElseThrow(
+                () -> new CompilationNotFoundException("Compilation ID not found.")
+        );
+        List<Long> eventIds = compilationInDto.getEvents();
+        for (Long eventId : eventIds) {
+            Event event = eventsRepository.findById(eventId).orElseThrow(
+                    () -> new EventNotFoundException("Event ID: " + eventId + " not found.")
+            );
+            compilation.getEvents().add(event);
+        }
         compilationsRepository.flush();
 
         return CompilationMapper.compilationToOutDto(compilation);

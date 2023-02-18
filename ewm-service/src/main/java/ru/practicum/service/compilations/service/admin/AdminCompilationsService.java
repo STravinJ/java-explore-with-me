@@ -15,6 +15,8 @@ public interface AdminCompilationsService {
 
     CompilationOutDto addEventToCompilation(Long compId, Long eventId) throws CompilationNotFoundException, EventNotFoundException;
 
+    CompilationOutDto addEventToCompilationDto(Long compId, CompilationInDto compilationInDto) throws CompilationNotFoundException, EventNotFoundException;
+
     void pinCompilation(Long compId) throws CompilationNotFoundException;
 
     void unPinCompilation(Long compId) throws CompilationNotFoundException;
