@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.service.events.exceptions.EventNotFoundException;
 import ru.practicum.service.events.model.Event;
-import ru.practicum.service.events.model.EventState;
 import ru.practicum.service.events.repository.EventsRepository;
 import ru.practicum.service.requests.dto.RequestOutDto;
 import ru.practicum.service.requests.exceptions.RequestNotFoundException;

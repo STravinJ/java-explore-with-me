@@ -30,7 +30,7 @@ public class EventInDto {
     private String title;
     private String stateAction;
     @FutureOrPresent(message = "event date should be current or future")
-    @JsonFormat(shape= JsonFormat.Shape.STRING, pattern = "uuuu-MM-dd HH:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "uuuu-MM-dd HH:mm:ss")
     private LocalDateTime eventDate;
     private Boolean paid;
     @Positive

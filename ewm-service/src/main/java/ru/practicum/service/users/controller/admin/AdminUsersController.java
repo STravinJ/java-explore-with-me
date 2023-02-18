@@ -3,10 +3,8 @@ package ru.practicum.service.users.controller.admin;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.lang.Nullable;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.service.utils.Constants;
 import ru.practicum.service.users.dto.UserDto;
 import ru.practicum.service.users.exceptions.UserNotFoundException;
 import ru.practicum.service.users.service.AdminUsersService;
@@ -14,9 +12,7 @@ import ru.practicum.service.users.service.AdminUsersService;
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/admin/users")

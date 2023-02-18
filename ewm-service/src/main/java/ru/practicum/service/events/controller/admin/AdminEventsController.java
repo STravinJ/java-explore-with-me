@@ -14,7 +14,6 @@ import ru.practicum.service.events.service.admin.AdminEventsService;
 import ru.practicum.service.users.exceptions.UserNotFoundException;
 import ru.practicum.service.utils.Constants;
 
-import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
