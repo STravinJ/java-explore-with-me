@@ -24,6 +24,7 @@ import ru.practicum.service.utils.Constants;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -47,7 +48,7 @@ public class AdminEventsServiceImpl implements AdminEventsService {
         if (states != null) {
             stateList = checkStatesCorrectOrThrow(states);
         } else {
-            stateList = List.of();
+            stateList = Collections.emptyList();
         }
         LocalDateTime startDate;
         if (rangeStart != null) {
