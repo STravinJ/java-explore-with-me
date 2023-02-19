@@ -19,6 +19,7 @@ import ru.practicum.service.utils.Constants;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
@@ -37,14 +38,12 @@ public class EventsServiceImpl implements EventsService {
                 () -> new EventNotFoundException("Event not found.")
         );
         StatInDto statInDto = new StatInDto();
-        statInDto.setEventId(eventId);
         statInDto.setApp(Constants.APP_NAME);
         statInDto.setUri(request.getRequestURI());
         statInDto.setIp(request.getRemoteAddr());
-        statInDto.setTimestamp(LocalDateTime.now());
+        statInDto.setTimestamp(LocalDateTime.now().format(DateTimeFormatter.ofPattern(Constants.DATE_TIME_STRING)));
         eventsRepository.incrementViews(eventId);
         adminStatsClient.saveHit(statInDto);
-        //event.setViews(adminStatsClient.getViews(eventId));
         return EventMapper.eventToPublicOutDto(event);
     }
 
@@ -99,16 +98,12 @@ public class EventsServiceImpl implements EventsService {
                 onlyAvailable,
                 pageable);
 
-        for (Event event : events) {
-            StatInDto statInDto = new StatInDto();
-            statInDto.setApp(Constants.APP_NAME);
-            statInDto.setUri(request.getRequestURI());
-            statInDto.setIp(request.getRemoteAddr());
-            statInDto.setTimestamp(LocalDateTime.now());
-            statInDto.setEventId(event.getId());
-            adminStatsClient.saveHit(statInDto);
-            event.setViews(adminStatsClient.getViews(event.getId()));
-        }
+        StatInDto statInDto = new StatInDto();
+        statInDto.setApp(Constants.APP_NAME);
+        statInDto.setUri(request.getRequestURI());
+        statInDto.setIp(request.getRemoteAddr());
+        statInDto.setTimestamp(LocalDateTime.now().format(DateTimeFormatter.ofPattern(Constants.DATE_TIME_STRING)));
+        adminStatsClient.saveHit(statInDto);
 
         return EventMapper.eventToPublicListOutDto(events);
     }
