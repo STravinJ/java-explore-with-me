@@ -37,13 +37,16 @@ public class EventsServiceImpl implements EventsService {
         Event event = eventsRepository.findByIdAndState(eventId, EventState.PUBLISHED).orElseThrow(
                 () -> new EventNotFoundException("Event not found.")
         );
+
+        eventsRepository.incrementViews(eventId);
+
         StatInDto statInDto = new StatInDto();
         statInDto.setApp(Constants.APP_NAME);
         statInDto.setUri(request.getRequestURI());
         statInDto.setIp(request.getRemoteAddr());
         statInDto.setTimestamp(LocalDateTime.now().format(DateTimeFormatter.ofPattern(Constants.DATE_TIME_STRING)));
-        eventsRepository.incrementViews(eventId);
         adminStatsClient.saveHit(statInDto);
+
         return EventMapper.eventToPublicOutDto(event);
     }
 
