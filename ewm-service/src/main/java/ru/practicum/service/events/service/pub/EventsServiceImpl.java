@@ -40,12 +40,12 @@ public class EventsServiceImpl implements EventsService {
 
         eventsRepository.incrementViews(eventId);
 
-        StatInDto statInDto = new StatInDto();
-        statInDto.setApp(Constants.APP_NAME);
-        statInDto.setUri(request.getRequestURI());
-        statInDto.setIp(request.getRemoteAddr());
-        statInDto.setTimestamp(LocalDateTime.now().format(DateTimeFormatter.ofPattern(Constants.DATE_TIME_STRING)));
-        adminStatsClient.saveHit(statInDto);
+        adminStatsClient.saveHit(new StatInDto(
+                Constants.APP_NAME,
+                request.getRequestURI(),
+                request.getRemoteAddr(),
+                LocalDateTime.now()
+        ));
 
         return EventMapper.eventToPublicOutDto(event);
     }
@@ -101,12 +101,12 @@ public class EventsServiceImpl implements EventsService {
                 onlyAvailable,
                 pageable);
 
-        StatInDto statInDto = new StatInDto();
-        statInDto.setApp(Constants.APP_NAME);
-        statInDto.setUri(request.getRequestURI());
-        statInDto.setIp(request.getRemoteAddr());
-        statInDto.setTimestamp(LocalDateTime.now().format(DateTimeFormatter.ofPattern(Constants.DATE_TIME_STRING)));
-        adminStatsClient.saveHit(statInDto);
+        adminStatsClient.saveHit(new StatInDto(
+                Constants.APP_NAME,
+                request.getRequestURI(),
+                request.getRemoteAddr(),
+                LocalDateTime.now()
+        ));
 
         return EventMapper.eventToPublicListOutDto(events);
     }
