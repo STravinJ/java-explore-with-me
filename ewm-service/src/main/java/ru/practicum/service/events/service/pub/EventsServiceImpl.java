@@ -47,6 +47,7 @@ public class EventsServiceImpl implements EventsService {
                                 request.getRemoteAddr(),
                                 LocalDateTime.now().toString()
                         ));
+
                         log.info(">>Hit send - OK.");
                     } catch (Exception err) {
                         log.info(">>Hit send. Error: " + err.getMessage());
