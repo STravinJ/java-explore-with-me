@@ -50,6 +50,7 @@ public class EventsServiceImpl implements EventsService {
                         log.info(">>Hit send - OK.");
                     } catch (Exception err) {
                         log.info(">>Hit send. Error: " + err.getMessage());
+                        throw new IllegalArgumentException(err.getMessage());
                     }
                 });
         sendHit.start();
@@ -119,6 +120,7 @@ public class EventsServiceImpl implements EventsService {
                         log.info(">>Hit search send - OK.");
                     } catch (Exception err) {
                         log.info(">>Hit search send. Error: " + err.getMessage());
+                        throw new IllegalArgumentException(err.getMessage());
                     }
                 });
         sendHit.start();
