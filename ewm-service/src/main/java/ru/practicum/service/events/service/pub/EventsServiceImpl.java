@@ -45,7 +45,7 @@ public class EventsServiceImpl implements EventsService {
                                 Constants.APP_NAME,
                                 request.getRequestURI(),
                                 request.getRemoteAddr(),
-                                LocalDateTime.now().toString()
+                                LocalDateTime.now()
                         ));
                         log.info(">>Hit send - OK.");
                     } catch (Exception err) {
@@ -114,7 +114,7 @@ public class EventsServiceImpl implements EventsService {
                                 Constants.APP_NAME,
                                 request.getRequestURI(),
                                 request.getRemoteAddr(),
-                                LocalDateTime.now().toString()
+                                LocalDateTime.now()
                         ));
                         log.info(">>Hit search send - OK.");
                     } catch (Exception err) {
