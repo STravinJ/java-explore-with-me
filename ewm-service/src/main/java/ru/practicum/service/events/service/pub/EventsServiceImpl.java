@@ -56,13 +56,17 @@ public class EventsServiceImpl implements EventsService {
         sendHit.start();
 
          */
-
+        try{
         adminStatsClient.saveHit(new StatInDto(
                 Constants.APP_NAME,
                 request.getRequestURI(),
                 request.getRemoteAddr(),
                 LocalDateTime.now()
         ));
+        } catch (Exception err) {
+            log.info(">>Hit send. Error: " + err.getMessage());
+           // throw new IllegalArgumentException(err.getMessage());
+        }
 
         return EventMapper.eventToPublicOutDto(event);
     }
@@ -137,12 +141,17 @@ public class EventsServiceImpl implements EventsService {
 
          */
 
+        try {
         adminStatsClient.saveHit(new StatInDto(
                 Constants.APP_NAME,
                 request.getRequestURI(),
                 request.getRemoteAddr(),
                 LocalDateTime.now()
         ));
+        } catch (Exception err) {
+            log.info(">>Hit search send. Error: " + err.getMessage());
+            //throw new IllegalArgumentException(err.getMessage());
+        }
 
         return EventMapper.eventToPublicListOutDto(events);
     }
