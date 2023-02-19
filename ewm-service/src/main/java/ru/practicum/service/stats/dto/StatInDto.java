@@ -7,6 +7,7 @@ import ru.practicum.service.utils.Constants;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Getter
 @Setter
@@ -19,14 +20,14 @@ public class StatInDto {
     private String ip;
     @NotNull
     @JsonFormat(pattern = Constants.DATE_TIME_STRING)
-    private LocalDateTime timestamp;
+    private String timestamp;
 
-    public StatInDto(String app, String uri, String ip, String timestamp) {
+    public StatInDto(String app, String uri, String ip, LocalDateTime timestamp) {
 
         this.app = app;
         this.uri = uri;
         this.ip = ip;
-        this.timestamp = LocalDateTime.parse(timestamp, Constants.DATE_TIME_SPACE);
+        this.timestamp = timestamp.format(DateTimeFormatter.ofPattern(Constants.DATE_TIME_STRING));
 
     }
 }

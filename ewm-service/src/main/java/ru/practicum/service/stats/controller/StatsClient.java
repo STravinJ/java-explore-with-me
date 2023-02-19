@@ -33,4 +33,12 @@ public class StatsClient extends BaseClient {
     public void saveHit(StatInDto statInDto) {
         post("/hit", statInDto);
     }
+
+    public Long getViews(Long eventId) {
+        Map<String, Object> parameters = Map.of(
+                "eventId", eventId
+        );
+        ResponseEntity<Object> views = get("/views/{eventId}", parameters);
+        return (Long) views.getBody();
+    }
 }

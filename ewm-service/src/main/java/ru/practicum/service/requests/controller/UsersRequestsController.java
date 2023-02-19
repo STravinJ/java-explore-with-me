@@ -6,7 +6,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.service.events.dto.EventOutDto;
 import ru.practicum.service.events.exceptions.EventNotFoundException;
-import ru.practicum.service.events.model.EventState;
 import ru.practicum.service.requests.dto.RequestInDto;
 import ru.practicum.service.requests.dto.RequestOutDto;
 import ru.practicum.service.requests.exceptions.RequestNotFoundException;
