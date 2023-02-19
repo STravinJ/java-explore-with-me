@@ -41,5 +41,4 @@ public class StatsClient extends BaseClient {
         ResponseEntity<Object> views = get("/views/{eventId}", parameters);
         return (Long) views.getBody();
     }
-    
 }

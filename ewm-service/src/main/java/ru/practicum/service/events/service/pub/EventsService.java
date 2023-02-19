@@ -3,7 +3,6 @@ package ru.practicum.service.events.service.pub;
 import ru.practicum.service.events.dto.EventPublicOutDto;
 import ru.practicum.service.events.exceptions.EventNotFoundException;
 import ru.practicum.service.events.model.SortType;
-import ru.practicum.service.stats.dto.StatInDto;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
