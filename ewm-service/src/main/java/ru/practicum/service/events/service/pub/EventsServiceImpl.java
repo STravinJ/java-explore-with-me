@@ -38,7 +38,7 @@ public class EventsServiceImpl implements EventsService {
         );
         eventsRepository.incrementViews(eventId);
 
-        Thread sendHit = new Thread(
+        /*Thread sendHit = new Thread(
                 () -> {
                     try {
                         adminStatsClient.saveHit(new StatInDto(
@@ -54,6 +54,16 @@ public class EventsServiceImpl implements EventsService {
                     }
                 });
         sendHit.start();
+
+         */
+
+        adminStatsClient.saveHit(new StatInDto(
+                Constants.APP_NAME,
+                request.getRequestURI(),
+                request.getRemoteAddr(),
+                LocalDateTime.now()
+        ));
+
         return EventMapper.eventToPublicOutDto(event);
     }
 
@@ -108,7 +118,7 @@ public class EventsServiceImpl implements EventsService {
                 onlyAvailable,
                 pageable);
 
-        Thread sendHit = new Thread(
+        /*Thread sendHit = new Thread(
                 () -> {
                     try {
                         adminStatsClient.saveHit(new StatInDto(
@@ -124,6 +134,15 @@ public class EventsServiceImpl implements EventsService {
                     }
                 });
         sendHit.start();
+
+         */
+
+        adminStatsClient.saveHit(new StatInDto(
+                Constants.APP_NAME,
+                request.getRequestURI(),
+                request.getRemoteAddr(),
+                LocalDateTime.now()
+        ));
 
         return EventMapper.eventToPublicListOutDto(events);
     }
