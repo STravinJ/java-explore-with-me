@@ -56,7 +56,7 @@ public class EventsServiceImpl implements EventsService {
         sendHit.start();
 
          */
-        try{
+        try {
             adminStatsClient.saveHit(new StatInDto(
                 Constants.APP_NAME,
                 request.getRequestURI(),
