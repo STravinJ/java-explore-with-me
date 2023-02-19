@@ -2,6 +2,7 @@ package ru.practicum.ewm.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import ru.practicum.ewm.dto.StatOutDto;
 import ru.practicum.ewm.model.Stat;
 
@@ -40,4 +41,5 @@ public interface StatsRepository extends JpaRepository<Stat, Long> {
             " ORDER BY count(s.id) DESC"
     )
     List<StatOutDto> countByTimestampAndListUniqueIp(LocalDateTime start, LocalDateTime end, List<String> uris);
+
 }

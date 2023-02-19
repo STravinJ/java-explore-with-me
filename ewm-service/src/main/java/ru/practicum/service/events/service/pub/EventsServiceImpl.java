@@ -36,23 +36,15 @@ public class EventsServiceImpl implements EventsService {
         Event event = eventsRepository.findByIdAndState(eventId, EventState.PUBLISHED).orElseThrow(
                 () -> new EventNotFoundException("Event not found.")
         );
+        StatInDto statInDto = new StatInDto();
+        statInDto.setEventId(eventId);
+        statInDto.setApp(Constants.APP_NAME);
+        statInDto.setUri(request.getRequestURI());
+        statInDto.setIp(request.getRemoteAddr());
+        statInDto.setTimestamp(LocalDateTime.now());
         eventsRepository.incrementViews(eventId);
-
-        Thread sendHit = new Thread(
-                () -> {
-                    try {
-                        adminStatsClient.saveHit(new StatInDto(
-                                Constants.APP_NAME,
-                                request.getRequestURI(),
-                                request.getRemoteAddr(),
-                                LocalDateTime.now().toString()
-                        ));
-                        log.info(">>Hit send - OK.");
-                    } catch (Exception err) {
-                        log.info(">>Hit send. Error: " + err.getMessage());
-                    }
-                });
-        sendHit.start();
+        adminStatsClient.saveHit(statInDto);
+        //event.setViews(adminStatsClient.getViews(eventId));
         return EventMapper.eventToPublicOutDto(event);
     }
 
@@ -107,21 +99,16 @@ public class EventsServiceImpl implements EventsService {
                 onlyAvailable,
                 pageable);
 
-        Thread sendHit = new Thread(
-                () -> {
-                    try {
-                        adminStatsClient.saveHit(new StatInDto(
-                                Constants.APP_NAME,
-                                request.getRequestURI(),
-                                request.getRemoteAddr(),
-                                LocalDateTime.now().toString()
-                        ));
-                        log.info(">>Hit search send - OK.");
-                    } catch (Exception err) {
-                        log.info(">>Hit search send. Error: " + err.getMessage());
-                    }
-                });
-        sendHit.start();
+        for (Event event : events) {
+            StatInDto statInDto = new StatInDto();
+            statInDto.setApp(Constants.APP_NAME);
+            statInDto.setUri(request.getRequestURI());
+            statInDto.setIp(request.getRemoteAddr());
+            statInDto.setTimestamp(LocalDateTime.now());
+            statInDto.setEventId(event.getId());
+            adminStatsClient.saveHit(statInDto);
+            event.setViews(adminStatsClient.getViews(event.getId()));
+        }
 
         return EventMapper.eventToPublicListOutDto(events);
     }

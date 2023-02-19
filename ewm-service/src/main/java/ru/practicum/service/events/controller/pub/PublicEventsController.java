@@ -8,6 +8,7 @@ import ru.practicum.service.events.dto.EventPublicOutDto;
 import ru.practicum.service.events.exceptions.EventNotFoundException;
 import ru.practicum.service.events.model.SortType;
 import ru.practicum.service.events.service.pub.EventsService;
+import ru.practicum.service.stats.dto.StatInDto;
 import ru.practicum.service.utils.Constants;
 
 import javax.servlet.http.HttpServletRequest;
