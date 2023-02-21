@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.service.categories.dto.CategoryFullDto;
 import ru.practicum.service.categories.dto.CategoryInDto;
 import ru.practicum.service.categories.exceptions.CategoryNotFoundException;
-import ru.practicum.service.categories.service.pub.CategoriesService;
+import ru.practicum.service.categories.service.CategoriesService;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;

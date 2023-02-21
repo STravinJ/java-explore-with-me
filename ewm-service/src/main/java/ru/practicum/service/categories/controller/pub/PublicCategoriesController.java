@@ -6,7 +6,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.service.categories.dto.CategoryFullDto;
 import ru.practicum.service.categories.exceptions.CategoryNotFoundException;
-import ru.practicum.service.categories.service.pub.CategoriesService;
+import ru.practicum.service.categories.service.CategoriesService;
 import ru.practicum.service.utils.Constants;
 
 import javax.validation.constraints.Positive;

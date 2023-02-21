@@ -6,7 +6,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.service.compilations.dto.CompilationOutDto;
 import ru.practicum.service.compilations.exceptions.CompilationNotFoundException;
-import ru.practicum.service.compilations.service.pub.CompilationsService;
+import ru.practicum.service.compilations.service.CompilationsService;
 import ru.practicum.service.utils.Constants;
 
 import javax.validation.constraints.Positive;
