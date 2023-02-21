@@ -8,7 +8,6 @@ import java.util.List;
 
 @Entity
 @Table(name = "COMPILATIONS", schema = "PUBLIC")
-@EqualsAndHashCode(exclude = "events")
 @ToString(exclude = "events")
 @Getter
 @Setter

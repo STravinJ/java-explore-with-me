@@ -12,7 +12,6 @@ import java.util.List;
 
 @Entity
 @Table(name = "EVENTS", schema = "PUBLIC")
-@EqualsAndHashCode(exclude = "compilations")
 @Getter
 @Setter
 @AllArgsConstructor
@@ -24,8 +23,6 @@ public class Event {
     private Long id;
     @Column(length = 2000)
     private String annotation;
-    @Column(name = "confirmed_requests")
-    private Integer confirmedRequests;
     @CreationTimestamp
     @Column(name = "created_on")
     private LocalDateTime createdOn;
@@ -41,16 +38,9 @@ public class Event {
     @Column(name = "request_moderation")
     private Boolean requestModeration;
     private String title;
-    private Long views;
     @Column(columnDefinition = "INTEGER DEFAULT 0")
     @Builder.Default
     private Integer rate = 0;
-
-    @ManyToMany
-    @JoinTable(name = "COMPILATIONS_EVENTS",
-            joinColumns = @JoinColumn(name = "EVENT_ID"),
-            inverseJoinColumns = @JoinColumn(name = "COMPILATION_ID"))
-    private List<Compilation> compilations;
 
     @Enumerated(EnumType.STRING)
     private EventState state;

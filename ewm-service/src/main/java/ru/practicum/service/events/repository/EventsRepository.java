@@ -29,13 +29,6 @@ public interface EventsRepository extends JpaRepository<Event, Long> {
 
     Optional<Event> findByIdAndState(Long eventId, EventState published);
 
-    @Modifying(clearAutomatically = true, flushAutomatically = true)
-    @Transactional
-    @Query("UPDATE Event e " +
-            " SET e.views = e.views + 1 " +
-            " WHERE e.id = :eventId")
-    void incrementViews(Long eventId);
-
     @Query("SELECT e FROM Event e " +
             " WHERE e.state = ru.practicum.service.events.model.EventState.PUBLISHED " +
             " AND (e.annotation LIKE CONCAT('%',:text,'%') OR e.description LIKE CONCAT('%',:text,'%')) " +
@@ -44,7 +37,6 @@ public interface EventsRepository extends JpaRepository<Event, Long> {
             " AND (e.eventDate BETWEEN :rangeStart AND :rangeEnd) " +
             " AND (" +
             " (:onlyAvailable = true AND e.participantLimit = 0) OR " +
-            " (:onlyAvailable = true AND e.participantLimit > e.confirmedRequests) OR " +
             " (:onlyAvailable = false)" +
             ") "
     )

@@ -36,13 +36,15 @@ public class AdminEventsServiceImpl implements AdminEventsService {
 
     @Override
     public List<EventOutDto> findAllEvents(Long[] users, String[] states, Long[] categories, String rangeStart, String rangeEnd, Integer from, Integer size) throws UserNotFoundException, CategoryNotFoundException {
-        checkUsersExitOrThrow(users);
+        /*checkUsersExitOrThrow(users);
 
         if (categories != null) {
             checkCategoriesExitOrThrow(categories);
         } else {
             categories = new Long[0];
         }
+
+         */
 
         List<EventState> stateList;
         if (states != null) {
@@ -81,7 +83,7 @@ public class AdminEventsServiceImpl implements AdminEventsService {
         return stateList;
     }
 
-    private void checkCategoriesExitOrThrow(Long[] categories) throws CategoryNotFoundException {
+    /*private void checkCategoriesExitOrThrow(Long[] categories) throws CategoryNotFoundException {
         for (Long catId : categories) {
             if (!categoriesRepository.existsById(catId)) {
                 throw new CategoryNotFoundException("Category ID: " + catId + " not found.");
@@ -96,6 +98,8 @@ public class AdminEventsServiceImpl implements AdminEventsService {
             }
         }
     }
+
+     */
 
     @Override
     public EventOutDto publishEvent(Long eventId) throws EventClosedException, EventNotFoundException, DateException {
@@ -144,9 +148,9 @@ public class AdminEventsServiceImpl implements AdminEventsService {
         } else if (stateAction.equals("REJECT_EVENT")) {
             rejectEvent(eventId);
         } else {
-            return EventMapper.eventToOutDto(eventsRepository.saveAndFlush(event));
+            return EventMapper.eventToOutDto(event);
         }
 
-        return EventMapper.eventToOutDto(eventsRepository.saveAndFlush(event));
+        return EventMapper.eventToOutDto(event);
     }
 }
