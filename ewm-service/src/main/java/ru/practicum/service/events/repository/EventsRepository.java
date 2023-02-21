@@ -29,6 +29,7 @@ public interface EventsRepository extends JpaRepository<Event, Long> {
 
     Optional<Event> findByIdAndState(Long eventId, EventState published);
 
+    /*
     @Query("SELECT e FROM Event e " +
             " WHERE e.state = ru.practicum.service.events.model.EventState.PUBLISHED " +
             " AND (e.annotation LIKE CONCAT('%',:text,'%') OR e.description LIKE CONCAT('%',:text,'%')) " +
@@ -37,6 +38,22 @@ public interface EventsRepository extends JpaRepository<Event, Long> {
             " AND (e.eventDate BETWEEN :rangeStart AND :rangeEnd) " +
             " AND (" +
             " (:onlyAvailable = true AND e.participantLimit = 0) OR " +
+            " (:onlyAvailable = true AND e.participantLimit > 0) OR " +
+            " (:onlyAvailable = false)" +
+            ") "
+    )
+
+     */
+    @Query("SELECT e as r_count FROM Event e " +
+            " LEFT JOIN Request r on e.id = r.event.id AND r.status = ru.practicum.service.requests.model.RequestState.CONFIRMED" +
+            " WHERE e.state = ru.practicum.service.events.model.EventState.PUBLISHED " +
+            " AND (e.annotation LIKE CONCAT('%',:text,'%') OR e.description LIKE CONCAT('%',:text,'%')) " +
+            " AND e.category.id IN :categories " +
+            " AND e.paid = :paid " +
+            " AND (e.eventDate BETWEEN :rangeStart AND :rangeEnd) " +
+            " GROUP BY e HAVING (" +
+            " (:onlyAvailable = true AND e.participantLimit = 0) OR " +
+            " (:onlyAvailable = true AND e.participantLimit > COUNT(r.id)) OR " +
             " (:onlyAvailable = false)" +
             ") "
     )

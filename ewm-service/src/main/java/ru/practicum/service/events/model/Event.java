@@ -35,8 +35,6 @@ public class Event {
     private LocalDateTime publishedOn;
     @Column(name = "request_moderation")
     private Boolean requestModeration;
-    @Column(name = "confirmed_requests")
-    private Integer confirmedRequests;
     private String title;
     @Column(columnDefinition = "INTEGER DEFAULT 0")
     @Builder.Default
