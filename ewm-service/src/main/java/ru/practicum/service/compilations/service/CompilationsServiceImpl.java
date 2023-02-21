@@ -96,6 +96,7 @@ public class CompilationsServiceImpl implements CompilationsService {
         );
         compilation.setPinned(pinned);
     }
+
     @Override
     public List<CompilationOutDto> findAllCompilations(Boolean pinned, Integer from, Integer size) {
         Pageable pageable = PageRequest.of(from / size, size);

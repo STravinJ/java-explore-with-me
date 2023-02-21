@@ -17,5 +17,5 @@ public interface AdminEventsService {
 
     EventOutDto rejectEvent(Long eventId) throws EventClosedException, EventNotFoundException;
 
-    EventOutDto updateEvent(Long eventId, EventInDto eventInDto) throws EventNotFoundException, CategoryNotFoundException, DateException;
+    EventOutDto updateEvent(Long eventId, EventInDto eventInDto, String stateAction) throws EventNotFoundException, CategoryNotFoundException, DateException, EventClosedException;
 }

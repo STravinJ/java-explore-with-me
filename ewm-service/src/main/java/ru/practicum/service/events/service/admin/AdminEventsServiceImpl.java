@@ -125,7 +125,7 @@ public class AdminEventsServiceImpl implements AdminEventsService {
 
     @Override
     @Transactional
-    public EventOutDto updateEvent(Long eventId, EventInDto eventInDto) throws EventNotFoundException, CategoryNotFoundException, DateException {
+    public EventOutDto updateEvent(Long eventId, EventInDto eventInDto, String stateAction) throws EventNotFoundException, CategoryNotFoundException, DateException, EventClosedException {
         Event event = eventsRepository.findById(eventId).orElseThrow(
                 () -> new EventNotFoundException("Event ID not found.")
         );
@@ -136,6 +136,16 @@ public class AdminEventsServiceImpl implements AdminEventsService {
             event.setEventDate(eventInDto.getEventDate());
         }
         Utils.setNotNullParamToEntity(eventInDto, event, categoriesRepository);
+
+        eventsRepository.saveAndFlush(event);
+
+        if (stateAction.equals("PUBLISH_EVENT")) {
+            publishEvent(eventId);
+        } else if (stateAction.equals("REJECT_EVENT")) {
+            rejectEvent(eventId);
+        } else {
+            return EventMapper.eventToOutDto(eventsRepository.saveAndFlush(event));
+        }
 
         return EventMapper.eventToOutDto(eventsRepository.saveAndFlush(event));
     }

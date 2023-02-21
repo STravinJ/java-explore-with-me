@@ -62,14 +62,6 @@ public class AdminEventsController {
                                    @RequestBody EventInDto eventInDto)
             throws EventNotFoundException, CategoryNotFoundException, DateException, EventClosedException {
         log.info("Admin Put updateEvent: {},{}", eventId, eventInDto);
-        if (eventInDto.getStateAction().equals("PUBLISH_EVENT")) {
-            adminEventsService.updateEvent(eventId, eventInDto);
-            return adminEventsService.publishEvent(eventId);
-        } else if (eventInDto.getStateAction().equals("REJECT_EVENT")) {
-            adminEventsService.updateEvent(eventId, eventInDto);
-            return adminEventsService.rejectEvent(eventId);
-        } else {
-            return adminEventsService.updateEvent(eventId, eventInDto);
-        }
+        return adminEventsService.updateEvent(eventId, eventInDto, eventInDto.getStateAction());
     }
 }
