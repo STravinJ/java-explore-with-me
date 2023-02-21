@@ -26,5 +26,11 @@ public interface RequestsRepository extends JpaRepository<Request, Long> {
     )
     List<Request> findAllByInitiatorIdAndEventId(Long userId, Long eventId);
 
+    @Query("SELECT r FROM Request r " +
+            " JOIN Event e ON r.event.id = e.id " +
+            " WHERE e.id = :eventId AND r.status = :requestState "
+    )
+    List<Request> findAllByRequestStateAndEventId(Long eventId, RequestState requestState);
+
     boolean existsByRequesterIdAndEventIdAndStatus(Long userId, Long eventId, RequestState requestState);
 }

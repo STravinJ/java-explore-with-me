@@ -59,6 +59,7 @@ public class CompilationsServiceImpl implements CompilationsService {
                 () -> new EventNotFoundException("Event ID: " + eventId + " not found.")
         );
         compilation.getEvents().add(event);
+        compilationsRepository.save(compilation);
 
         return CompilationMapper.compilationToOutDto(compilation);
     }
@@ -75,6 +76,7 @@ public class CompilationsServiceImpl implements CompilationsService {
             );
             compilation.getEvents().add(event);
         }
+        compilationsRepository.save(compilation);
 
         return CompilationMapper.compilationToOutDto(compilation);
     }
@@ -95,6 +97,7 @@ public class CompilationsServiceImpl implements CompilationsService {
                 () -> new CompilationNotFoundException("Compilation ID not found.")
         );
         compilation.setPinned(pinned);
+        compilationsRepository.save(compilation);
     }
 
     @Override

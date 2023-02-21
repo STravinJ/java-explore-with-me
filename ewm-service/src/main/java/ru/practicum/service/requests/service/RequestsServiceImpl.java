@@ -51,7 +51,7 @@ public class RequestsServiceImpl implements RequestsService {
             throw new AccessDeniedException("Only owner of Event can Reject Request.");
         }
         Event event = request.getEvent();
-        if (event.getParticipantLimit() != 0 && (event.getParticipantLimit()) <= 0) {
+        if (event.getParticipantLimit() != 0 && (event.getParticipantLimit() - requestsRepository.findAllByRequestStateAndEventId(eventId, RequestState.CONFIRMED).size()) <= 0) {
             requestsRepository.rejectAllPendingRequest(eventId);
             throw new IllegalStateException("Event don't have any free slot.");
         }
@@ -132,7 +132,7 @@ public class RequestsServiceImpl implements RequestsService {
         if (event.getInitiator().getId().equals(userId)) {
             throw new UserRequestHimselfException("User can't request himself.");
         }
-        if (event.getParticipantLimit() != 0 && (event.getParticipantLimit()) <= 0) {
+        if (event.getParticipantLimit() != 0 && (event.getParticipantLimit() - requestsRepository.findAllByRequestStateAndEventId(eventId, RequestState.CONFIRMED).size()) <= 0) {
             throw new IllegalStateException("Event don't have any free slot.");
         }
         if (!event.getState().equals(EventState.PUBLISHED)) {
