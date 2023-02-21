@@ -33,7 +33,6 @@ public class EventMapper {
                 .initiator(UserMapper.userToDto(event.getInitiator()))
                 .location(LocationMapper.locationToDto(event.getLocation()))
                 .title(event.getTitle())
-                //.confirmedRequests(event.getConfirmedRequests())
                 .createdOn(event.getCreatedOn())
                 .description(event.getDescription())
                 .eventDate(event.getEventDate())
@@ -43,7 +42,6 @@ public class EventMapper {
                 .publishedOn(event.getPublishedOn())
                 .requestModeration(event.getRequestModeration())
                 .state(event.getState())
-                .views(event.getViews())
                 .rate(event.getRate())
                 .build();
     }
@@ -64,7 +62,6 @@ public class EventMapper {
                 .initiator(UserMapper.userToPublicDto(event.getInitiator()))
                 .location(LocationMapper.locationToDto(event.getLocation()))
                 .title(event.getTitle())
-                .confirmedRequests(event.getConfirmedRequests())
                 .createdOn(event.getCreatedOn())
                 .description(event.getDescription())
                 .eventDate(event.getEventDate())
@@ -74,7 +71,6 @@ public class EventMapper {
                 .publishedOn(event.getPublishedOn())
                 .requestModeration(event.getRequestModeration())
                 .state(event.getState())
-                .views(event.getViews())
                 .rate(event.getRate())
                 .build();
     }
