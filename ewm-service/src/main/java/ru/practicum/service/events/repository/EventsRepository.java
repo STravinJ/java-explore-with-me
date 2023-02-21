@@ -44,7 +44,7 @@ public interface EventsRepository extends JpaRepository<Event, Long> {
     )
 
      */
-    @Query("SELECT e as r_count FROM Event e " +
+    @Query("SELECT e FROM Event e " +
             " LEFT JOIN Request r on e.id = r.event.id AND r.status = ru.practicum.service.requests.model.RequestState.CONFIRMED" +
             " WHERE e.state = ru.practicum.service.events.model.EventState.PUBLISHED " +
             " AND (e.annotation LIKE CONCAT('%',:text,'%') OR e.description LIKE CONCAT('%',:text,'%')) " +

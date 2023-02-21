@@ -78,7 +78,6 @@ public class EventsServiceImpl implements EventsService {
             endDate = LocalDateTime.now();
         }
 
-        onlyAvailable = true;
         List<EventPublicOutDto> events = eventsRepository.findAllByParam(
                 text,
                 categories,
@@ -89,7 +88,7 @@ public class EventsServiceImpl implements EventsService {
                 pageable).stream()
                 .map(EventMapper::eventToPublicOutDto)
                 .peek(o -> o.setViews(adminStatsClient.getViews(o.getId())))
-                .collect(Collectors.toUnmodifiableList());
+                .collect(Collectors.toList());
 
         switch (sortType) {
             case EVENT_DATE:
