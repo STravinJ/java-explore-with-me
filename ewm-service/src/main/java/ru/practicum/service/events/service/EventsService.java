@@ -26,6 +26,7 @@ public interface EventsService {
                                           Integer from,
                                           Integer size,
                                           HttpServletRequest request);
+
     EventOutDto addEvent(Long userId, EventInDto eventInDto) throws CategoryNotFoundException, UserNotFoundException, DateException;
 
     EventOutDto updateEvent(Long userId, EventInDto eventInDto) throws CategoryNotFoundException, UserNotFoundException, EventNotFoundException, EventClosedException, DateException;
