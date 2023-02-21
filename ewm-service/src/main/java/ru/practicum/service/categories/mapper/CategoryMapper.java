@@ -4,8 +4,8 @@ import ru.practicum.service.categories.dto.CategoryFullDto;
 import ru.practicum.service.categories.dto.CategoryInDto;
 import ru.practicum.service.categories.model.Category;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class CategoryMapper {
     public static Category dtoOutToCategory(CategoryFullDto categoryFullDto) {
@@ -29,10 +29,10 @@ public class CategoryMapper {
     }
 
     public static List<CategoryFullDto> categoryToListDtoOut(List<Category> listCategories) {
-        List<CategoryFullDto> categoryFullDtoList = new ArrayList<>();
-        for (Category category : listCategories) {
-            categoryFullDtoList.add(categoryToDtoOut(category));
-        }
-        return categoryFullDtoList;
+
+        return listCategories.stream()
+                .map(CategoryMapper::categoryToDtoOut)
+                .collect(Collectors.toList());
+
     }
 }

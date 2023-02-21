@@ -1,11 +1,16 @@
-package ru.practicum.service.compilations.service.admin;
+package ru.practicum.service.compilations.service;
 
 import ru.practicum.service.compilations.dto.CompilationInDto;
 import ru.practicum.service.compilations.dto.CompilationOutDto;
 import ru.practicum.service.compilations.exceptions.CompilationNotFoundException;
 import ru.practicum.service.events.exceptions.EventNotFoundException;
 
-public interface AdminCompilationsService {
+import java.util.List;
+
+public interface CompilationsService {
+    List<CompilationOutDto> findAllCompilations(Boolean pinned, Integer from, Integer size);
+
+    CompilationOutDto findCompilationById(Long compId) throws CompilationNotFoundException;
 
     CompilationOutDto addCompilation(CompilationInDto compilationInDto);
 

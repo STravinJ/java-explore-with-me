@@ -1,6 +1,8 @@
-package ru.practicum.service.compilations.service.admin;
+package ru.practicum.service.compilations.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.service.compilations.dto.CompilationInDto;
@@ -17,9 +19,9 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class AdminCompilationsServiceImpl implements AdminCompilationsService {
-    private final EventsRepository eventsRepository;
+public class CompilationsServiceImpl implements CompilationsService {
     private final CompilationsRepository compilationsRepository;
+    private final EventsRepository eventsRepository;
 
     @Override
     @Transactional
@@ -37,7 +39,6 @@ public class AdminCompilationsServiceImpl implements AdminCompilationsService {
             throw new CompilationNotFoundException("Compilation ID not found.");
         }
         compilationsRepository.deleteById(compId);
-        compilationsRepository.flush();
     }
 
     @Override
@@ -47,7 +48,6 @@ public class AdminCompilationsServiceImpl implements AdminCompilationsService {
                 () -> new CompilationNotFoundException("Compilation ID not found.")
         );
         compilation.getEvents().removeIf((e) -> e.getId().equals(eventId));
-        compilationsRepository.flush();
     }
 
     @Override
@@ -59,7 +59,6 @@ public class AdminCompilationsServiceImpl implements AdminCompilationsService {
                 () -> new EventNotFoundException("Event ID: " + eventId + " not found.")
         );
         compilation.getEvents().add(event);
-        compilationsRepository.flush();
 
         return CompilationMapper.compilationToOutDto(compilation);
     }
@@ -76,7 +75,6 @@ public class AdminCompilationsServiceImpl implements AdminCompilationsService {
             );
             compilation.getEvents().add(event);
         }
-        compilationsRepository.flush();
 
         return CompilationMapper.compilationToOutDto(compilation);
     }
@@ -97,7 +95,21 @@ public class AdminCompilationsServiceImpl implements AdminCompilationsService {
                 () -> new CompilationNotFoundException("Compilation ID not found.")
         );
         compilation.setPinned(pinned);
-        compilationsRepository.flush();
+    }
+    @Override
+    public List<CompilationOutDto> findAllCompilations(Boolean pinned, Integer from, Integer size) {
+        Pageable pageable = PageRequest.of(from / size, size);
+        if (pinned != null) {
+            return CompilationMapper.compilationToListOutDto(compilationsRepository.findAlLByPinned(pinned, pageable));
+        }
+        return CompilationMapper.compilationToListOutDto(compilationsRepository.findAll(pageable).toList());
     }
 
+    @Override
+    public CompilationOutDto findCompilationById(Long compId) throws CompilationNotFoundException {
+        return CompilationMapper.compilationToOutDto(compilationsRepository.findById(compId).orElseThrow(
+                () -> new CompilationNotFoundException("Compilation ID was not found.")
+        ));
+
+    }
 }

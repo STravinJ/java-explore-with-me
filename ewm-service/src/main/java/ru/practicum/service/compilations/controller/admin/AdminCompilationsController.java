@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.service.compilations.dto.CompilationInDto;
 import ru.practicum.service.compilations.dto.CompilationOutDto;
 import ru.practicum.service.compilations.exceptions.CompilationNotFoundException;
-import ru.practicum.service.compilations.service.admin.AdminCompilationsService;
+import ru.practicum.service.compilations.service.CompilationsService;
 import ru.practicum.service.events.exceptions.EventNotFoundException;
 
 import javax.validation.Valid;
@@ -20,20 +20,20 @@ import javax.validation.constraints.Positive;
 @Validated
 @Slf4j
 public class AdminCompilationsController {
-    private final AdminCompilationsService adminCompilationsService;
+    private final CompilationsService compilationsService;
 
     @ResponseStatus(value = HttpStatus.CREATED)
     @PostMapping
     public CompilationOutDto addCompilation(@Valid @RequestBody CompilationInDto compilationInDto) {
         log.info("Admin addCompilation: {}", compilationInDto);
-        return adminCompilationsService.addCompilation(compilationInDto);
+        return compilationsService.addCompilation(compilationInDto);
     }
 
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     @DeleteMapping("{compId}")
     public void removeCompilation(@Positive @PathVariable Long compId) throws CompilationNotFoundException {
         log.info("Admin removeCompilation: {}", compId);
-        adminCompilationsService.removeCompilation(compId);
+        compilationsService.removeCompilation(compId);
     }
 
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
@@ -43,7 +43,7 @@ public class AdminCompilationsController {
             @Positive @PathVariable Long eventId
     ) throws CompilationNotFoundException {
         log.info("Admin removeEventFromCompilation: {},{}", compId, eventId);
-        adminCompilationsService.removeEventFromCompilation(compId, eventId);
+        compilationsService.removeEventFromCompilation(compId, eventId);
     }
 
     @PatchMapping("{compId}")
@@ -52,7 +52,7 @@ public class AdminCompilationsController {
             @RequestBody CompilationInDto compilationInDto
     ) throws CompilationNotFoundException, EventNotFoundException {
         log.info("Admin addEventToCompilation: {},{}", compId, compilationInDto);
-        return adminCompilationsService.addEventToCompilationDto(compId, compilationInDto);
+        return compilationsService.addEventToCompilationDto(compId, compilationInDto);
     }
 
     @PatchMapping("/{compId}/events/{eventId}")
@@ -61,7 +61,7 @@ public class AdminCompilationsController {
             @Positive @PathVariable Long eventId
     ) throws CompilationNotFoundException, EventNotFoundException {
         log.info("Admin addEventToCompilation: {},{}", compId, eventId);
-        return adminCompilationsService.addEventToCompilation(compId, eventId);
+        return compilationsService.addEventToCompilation(compId, eventId);
     }
 
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
@@ -70,7 +70,7 @@ public class AdminCompilationsController {
             @Positive @PathVariable Long compId
     ) throws CompilationNotFoundException {
         log.info("Admin unPinCompilation: {}", compId);
-        adminCompilationsService.unPinCompilation(compId);
+        compilationsService.unPinCompilation(compId);
     }
 
     @PatchMapping("{compId}/pin")
@@ -78,7 +78,7 @@ public class AdminCompilationsController {
             @Positive @PathVariable Long compId
     ) throws CompilationNotFoundException {
         log.info("Admin pinCompilation: {}", compId);
-        adminCompilationsService.pinCompilation(compId);
+        compilationsService.pinCompilation(compId);
     }
 
 }
