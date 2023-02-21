@@ -8,8 +8,5 @@ import ru.practicum.service.users.model.User;
 import java.util.List;
 
 public interface UsersRepository extends JpaRepository<User, Long> {
-    @Query(
-            "SELECT u FROM User as u WHERE u.id IN :ids"
-    )
-    List<User> findAllByIds(Long[] ids, Pageable pageable);
+    List<User> findAllByIdIn(Long[] ids, Pageable pageable);
 }

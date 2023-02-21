@@ -30,7 +30,7 @@ public class AdminUsersServiceImpl implements AdminUsersService {
     @Override
     public List<UserDto> findAll(Long[] ids, Integer from, Integer size) {
         Pageable pageable = PageRequest.of(from / size, size);
-        return UserMapper.userListToDto(usersRepository.findAllByIds(ids, pageable));
+        return UserMapper.userListToDto(usersRepository.findAllByIdIn(ids, pageable));
     }
 
     @Override

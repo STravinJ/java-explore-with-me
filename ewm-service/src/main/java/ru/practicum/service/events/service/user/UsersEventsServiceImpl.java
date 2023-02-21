@@ -56,8 +56,6 @@ public class UsersEventsServiceImpl implements UsersEventsService {
         Event event = EventMapper.dtoInToEvent(eventInDto, categoriesRepository.getReferenceById(eventInDto.getCategory()));
         event.setInitiator(usersRepository.getReferenceById(userId));
         event.setState(EventState.PENDING);
-        event.setConfirmedRequests(0);
-        event.setViews(0L);
         return EventMapper.eventToOutDto(eventsRepository.saveAndFlush(event));
     }
 
@@ -125,32 +123,6 @@ public class UsersEventsServiceImpl implements UsersEventsService {
         event.setState(EventState.CANCELED);
 
         return EventMapper.eventToOutDto(eventsRepository.saveAndFlush(event));
-    }
-
-    private Float getRate(Long userId) {
-        int count = eventsRepository.countByInitiatorId(userId);
-        long rate = eventsRepository.sumRateByInitiatorId(userId);
-
-        return count == 0 ? 0.0F : (1.0F * rate / count);
-    }
-
-    private void checkUser(Long userId, Event event) throws UserNotFoundException, AccessDeniedException {
-        if (!usersRepository.existsById(userId)) {
-            throw new UserNotFoundException("User ID not found.");
-        }
-        if (userId.equals(event.getInitiator().getId())) {
-            throw new AccessDeniedException("Запрещено оценивать собственное событие.");
-        }
-    }
-
-    private Event getEvent(Long eventId) throws EventNotFoundException, AccessDeniedException {
-        Event event = eventsRepository.findById(eventId).orElseThrow(
-                () -> new EventNotFoundException("Event ID not found.")
-        );
-        if (event.getState() != EventState.PUBLISHED) {
-            throw new AccessDeniedException("Можно оценивать только опубликованные события.");
-        }
-        return event;
     }
 
 }
