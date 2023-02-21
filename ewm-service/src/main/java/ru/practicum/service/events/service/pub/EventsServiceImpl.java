@@ -87,8 +87,15 @@ public class EventsServiceImpl implements EventsService {
                 onlyAvailable,
                 pageable).stream()
                 .map(EventMapper::eventToPublicOutDto)
-                .peek(o -> o.setViews(adminStatsClient.getViews(o.getId())))
                 .collect(Collectors.toList());
+
+        for (EventPublicOutDto eventPublicOutDto : events) {
+            try {
+                eventPublicOutDto.setViews(adminStatsClient.getViews(eventPublicOutDto.getId()));
+            } catch (Exception err) {
+                log.info(">>Hit search send. Error: " + err.getMessage());
+            }
+        }
 
         switch (sortType) {
             case EVENT_DATE:
