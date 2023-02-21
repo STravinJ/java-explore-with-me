@@ -58,6 +58,7 @@ public class RequestsServiceImpl implements RequestsService {
 
         if (request.getStatus() == RequestState.PENDING) {
             request.setStatus(RequestState.CONFIRMED);
+
             requestsRepository.saveAndFlush(request);
         }
 
