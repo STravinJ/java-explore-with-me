@@ -3,12 +3,10 @@ package ru.practicum.service.events.model;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import ru.practicum.service.categories.model.Category;
-import ru.practicum.service.compilations.model.Compilation;
 import ru.practicum.service.users.model.User;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Entity
 @Table(name = "EVENTS", schema = "PUBLIC")
