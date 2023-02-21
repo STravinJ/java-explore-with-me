@@ -36,7 +36,6 @@ CREATE TABLE IF NOT EXISTS events
         CONSTRAINT annotation_length CHECK (char_length(annotation) >= 20 AND char_length(annotation) <= 2000),
     category_id        BIGINT NOT NULL
         CONSTRAINT events_categories_fkey REFERENCES categories,
-    confirmed_requests INTEGER,
     created_on         TIMESTAMP WITHOUT TIME ZONE,
     description        TEXT,
     CONSTRAINT description_length CHECK (char_length(description) >= 20 AND char_length(description) <= 7000),
@@ -52,7 +51,6 @@ CREATE TABLE IF NOT EXISTS events
     state              VARCHAR(15),
     title              VARCHAR(120)
         CONSTRAINT title_length CHECK (char_length(title) >= 3),
-    views              BIGINT  DEFAULT 0,
     rate               INTEGER DEFAULT 0
 );
 

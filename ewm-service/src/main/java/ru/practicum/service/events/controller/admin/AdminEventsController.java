@@ -10,7 +10,7 @@ import ru.practicum.service.events.dto.EventOutDto;
 import ru.practicum.service.events.exceptions.DateException;
 import ru.practicum.service.events.exceptions.EventClosedException;
 import ru.practicum.service.events.exceptions.EventNotFoundException;
-import ru.practicum.service.events.service.admin.AdminEventsService;
+import ru.practicum.service.events.service.EventsService;
 import ru.practicum.service.users.exceptions.UserNotFoundException;
 import ru.practicum.service.utils.Constants;
 
@@ -24,7 +24,7 @@ import java.util.List;
 @Validated
 @Slf4j
 public class AdminEventsController {
-    private final AdminEventsService adminEventsService;
+    private final EventsService eventsService;
 
     @GetMapping
     public List<EventOutDto> findAllEvents(
@@ -40,21 +40,21 @@ public class AdminEventsController {
             throws UserNotFoundException, CategoryNotFoundException {
         log.info("Admin findAllEvents: {},{},{},{},{},{},{}",
                 users, states, categories, rangeStart, rangeEnd, from, size);
-        return adminEventsService.findAllEvents(users, states, categories, rangeStart, rangeEnd, from, size);
+        return eventsService.findAllEvents(users, states, categories, rangeStart, rangeEnd, from, size);
     }
 
     @PatchMapping("/{eventId}/publish")
     public EventOutDto publishEvent(@PathVariable Long eventId)
             throws EventNotFoundException, EventClosedException, DateException {
         log.info("Admin publishEvent: {}", eventId);
-        return adminEventsService.publishEvent(eventId);
+        return eventsService.publishEvent(eventId);
     }
 
     @PatchMapping("/{eventId}/reject")
     public EventOutDto rejectEvent(@Positive @PathVariable Long eventId)
             throws EventNotFoundException, EventClosedException {
         log.info("Admin Patch rejectEvent: {}", eventId);
-        return adminEventsService.rejectEvent(eventId);
+        return eventsService.rejectEvent(eventId);
     }
 
     @PatchMapping("/{eventId}")
@@ -62,6 +62,6 @@ public class AdminEventsController {
                                    @RequestBody EventInDto eventInDto)
             throws EventNotFoundException, CategoryNotFoundException, DateException, EventClosedException {
         log.info("Admin Put updateEvent: {},{}", eventId, eventInDto);
-        return adminEventsService.updateEvent(eventId, eventInDto, eventInDto.getStateAction());
+        return eventsService.updateEvent(eventId, eventInDto, eventInDto.getStateAction());
     }
 }

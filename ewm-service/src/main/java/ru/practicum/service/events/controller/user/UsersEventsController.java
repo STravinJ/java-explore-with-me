@@ -12,7 +12,7 @@ import ru.practicum.service.events.dto.EventOutDto;
 import ru.practicum.service.events.exceptions.DateException;
 import ru.practicum.service.events.exceptions.EventClosedException;
 import ru.practicum.service.events.exceptions.EventNotFoundException;
-import ru.practicum.service.events.service.user.UsersEventsService;
+import ru.practicum.service.events.service.EventsService;
 import ru.practicum.service.users.exceptions.UserNotFoundException;
 import ru.practicum.service.utils.Constants;
 
@@ -27,14 +27,14 @@ import java.util.List;
 @Validated
 @Slf4j
 public class UsersEventsController {
-    private final UsersEventsService usersEventsService;
+    private final EventsService eventsService;
 
     @ResponseStatus(value = HttpStatus.CREATED)
     @PostMapping
     public EventOutDto addEvent(@Positive @PathVariable Long userId, @Valid @RequestBody EventInDto eventInDto)
             throws CategoryNotFoundException, UserNotFoundException, DateException {
         log.info("User addEvent: {},{}", userId, eventInDto);
-        return usersEventsService.addEvent(userId, eventInDto);
+        return eventsService.addEvent(userId, eventInDto);
     }
 
     @PatchMapping
@@ -45,7 +45,7 @@ public class UsersEventsController {
             EventNotFoundException,
             EventClosedException, DateException {
         log.info("User updateEvent: {},{}", userId, eventInDto);
-        return usersEventsService.updateEvent(userId, eventInDto);
+        return eventsService.updateEvent(userId, eventInDto);
     }
 
     @GetMapping
@@ -56,7 +56,7 @@ public class UsersEventsController {
                                            @RequestParam(name = "size", defaultValue = Constants.PAGE_SIZE_STRING) Integer size)
             throws UserNotFoundException {
         log.info("User findAllEvents: {},{},{}", userId, from, size);
-        return usersEventsService.findAllEvents(userId, from, size);
+        return eventsService.findAllEvents(userId, from, size);
     }
 
     @GetMapping("{eventId}")
@@ -64,7 +64,7 @@ public class UsersEventsController {
                                 @Positive @PathVariable Long eventId)
             throws UserNotFoundException, EventNotFoundException {
         log.info("User getEvent: {},{}", userId, eventId);
-        return usersEventsService.getEvent(userId, eventId);
+        return eventsService.getEvent(userId, eventId);
     }
 
     @PatchMapping("{eventId}")
@@ -78,11 +78,11 @@ public class UsersEventsController {
             EventClosedException, DateException {
         log.info("User cancelEvent: {},{}", userId, eventId);
         if (eventInDtoStateAction.getStateAction().equals("CANCEL_REVIEW")) {
-            return usersEventsService.cancelEvent(userId, eventId);
+            return eventsService.cancelEvent(userId, eventId);
         } else {
             EventInDto eventInDto = new EventInDto();
             eventInDto.setEventId(eventId);
-            return usersEventsService.updateEvent(userId, eventInDto);
+            return eventsService.updateEvent(userId, eventInDto);
         }
     }
 
