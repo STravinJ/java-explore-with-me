@@ -32,7 +32,7 @@ public class UsersEventsController {
     @ResponseStatus(value = HttpStatus.CREATED)
     @PostMapping
     public EventOutDto addEvent(@Positive @PathVariable Long userId, @Valid @RequestBody EventInDto eventInDto)
-            throws CategoryNotFoundException, UserNotFoundException, DateException {
+            throws CategoryNotFoundException, UserNotFoundException, DateException, EventNotFoundException {
         log.info("User addEvent: {},{}", userId, eventInDto);
         return eventsService.addEvent(userId, eventInDto);
     }

@@ -25,6 +25,7 @@ import ru.practicum.service.stats.controller.StatsClient;
 import ru.practicum.service.stats.dto.StatInDto;
 import ru.practicum.service.stats.dto.StatOutDto;
 import ru.practicum.service.users.exceptions.UserNotFoundException;
+import ru.practicum.service.users.model.User;
 import ru.practicum.service.users.repository.UsersRepository;
 import ru.practicum.service.utils.Constants;
 import ru.practicum.service.utils.Utils;
@@ -53,9 +54,9 @@ public class EventsServiceImpl implements EventsService {
         Category category = categoriesRepository.findById(eventInDto.getCategory()).orElseThrow(
                 () -> new CategoryNotFoundException("Event ID not found.")
         );
-        if (!usersRepository.existsById(userId)) {
-            throw new UserNotFoundException("User ID not found.");
-        }
+        User user = usersRepository.findById(userId).orElseThrow(
+                () -> new UserNotFoundException("Event ID not found.")
+        );
         if (eventInDto.getLocation() == null) {
             throw new InvalidParameterException("Location is null.");
         }
@@ -65,7 +66,7 @@ public class EventsServiceImpl implements EventsService {
         Utils.checkTimeBeforeOrThrow(eventInDto.getEventDate(), Constants.USER_TIME_HOUR_BEFORE_START);
 
         Event event = EventMapper.dtoInToEvent(eventInDto, category);
-        event.setInitiator(usersRepository.getReferenceById(userId));
+        event.setInitiator(user);
         event.setState(EventState.PENDING);
         return EventMapper.eventToOutDto(eventsRepository.saveAndFlush(event));
     }
