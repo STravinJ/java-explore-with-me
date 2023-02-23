@@ -308,7 +308,7 @@ public class EventsServiceImpl implements EventsService {
             eventsMap.get(key).setViews(statOutDto.getHits());
         }
 
-        List<EventPublicOutDto> events = (List) eventsMap.values();
+        List<EventPublicOutDto> events = new ArrayList<EventPublicOutDto>(eventsMap.values());
 
         switch (sortType) {
             case EVENT_DATE:
