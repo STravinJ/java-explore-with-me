@@ -67,7 +67,7 @@ public class RequestsServiceImpl implements RequestsService {
 
             request.setStatus(RequestState.CONFIRMED);
             requestsRepository.saveAndFlush(request);
-            if (participantLimit != 0 && (participantLimit- confirmedRequests - 1) <= 0) {
+            if (participantLimit != 0 && (participantLimit - confirmedRequests - 1) <= 0) {
                 rejectAllPendingRequest = true;
             }
 
