@@ -6,7 +6,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.service.requests.model.Request;
 import ru.practicum.service.requests.model.RequestState;
-import ru.practicum.service.users.model.User;
 
 import java.util.List;
 

@@ -22,7 +22,6 @@ import ru.practicum.service.users.repository.UsersRepository;
 
 import java.nio.file.AccessDeniedException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
