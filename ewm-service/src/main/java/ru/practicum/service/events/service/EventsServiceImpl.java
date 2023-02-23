@@ -8,6 +8,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.service.categories.exceptions.CategoryNotFoundException;
+import ru.practicum.service.categories.model.Category;
 import ru.practicum.service.categories.repository.CategoriesRepository;
 import ru.practicum.service.events.dto.EventInDto;
 import ru.practicum.service.events.dto.EventOutDto;
@@ -22,6 +23,7 @@ import ru.practicum.service.events.model.SortType;
 import ru.practicum.service.events.repository.EventsRepository;
 import ru.practicum.service.stats.controller.StatsClient;
 import ru.practicum.service.stats.dto.StatInDto;
+import ru.practicum.service.stats.dto.StatOutDto;
 import ru.practicum.service.users.exceptions.UserNotFoundException;
 import ru.practicum.service.users.repository.UsersRepository;
 import ru.practicum.service.utils.Constants;
@@ -30,10 +32,8 @@ import ru.practicum.service.utils.Utils;
 import javax.servlet.http.HttpServletRequest;
 import java.security.InvalidParameterException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -49,9 +49,10 @@ public class EventsServiceImpl implements EventsService {
     @Override
     @Transactional
     public EventOutDto addEvent(Long userId, EventInDto eventInDto) throws CategoryNotFoundException, UserNotFoundException, DateException {
-        if (!categoriesRepository.existsById(eventInDto.getCategory())) {
-            throw new CategoryNotFoundException("Category ID not found.");
-        }
+
+        Category category = categoriesRepository.findById(eventInDto.getCategory()).orElseThrow(
+                () -> new CategoryNotFoundException("Event ID not found.")
+        );
         if (!usersRepository.existsById(userId)) {
             throw new UserNotFoundException("User ID not found.");
         }
@@ -63,7 +64,7 @@ public class EventsServiceImpl implements EventsService {
         }
         Utils.checkTimeBeforeOrThrow(eventInDto.getEventDate(), Constants.USER_TIME_HOUR_BEFORE_START);
 
-        Event event = EventMapper.dtoInToEvent(eventInDto, categoriesRepository.getReferenceById(eventInDto.getCategory()));
+        Event event = EventMapper.dtoInToEvent(eventInDto, category);
         event.setInitiator(usersRepository.getReferenceById(userId));
         event.setState(EventState.PENDING);
         return EventMapper.eventToOutDto(eventsRepository.saveAndFlush(event));
@@ -136,7 +137,7 @@ public class EventsServiceImpl implements EventsService {
     }
 
     @Override
-    public List<EventOutDto> findAllEvents(Long[] users, String[] states, Long[] categories, String rangeStart, String rangeEnd, Integer from, Integer size) throws UserNotFoundException, CategoryNotFoundException {
+    public List<EventOutDto> findAllEvents(Long[] users, String[] states, Long[] categories, String rangeStart, String rangeEnd, Integer from, Integer size) {
 
         List<EventState> stateList;
         if (states != null) {
@@ -230,9 +231,6 @@ public class EventsServiceImpl implements EventsService {
 
     @Override
     public EventPublicOutDto findEventById(Long eventId, HttpServletRequest request) throws EventNotFoundException {
-        if (!eventsRepository.existsByIdAndState(eventId, EventState.PUBLISHED)) {
-            throw new EventNotFoundException("Event not found.");
-        }
         Event event = eventsRepository.findByIdAndState(eventId, EventState.PUBLISHED).orElseThrow(
                 () -> new EventNotFoundException("Event not found.")
         );
@@ -277,7 +275,7 @@ public class EventsServiceImpl implements EventsService {
             endDate = LocalDateTime.now();
         }
 
-        List<EventPublicOutDto> events = eventsRepository.findAllByParam(
+        Map<Long, EventPublicOutDto> eventsMap = eventsRepository.findAllByParam(
                 text,
                 categories,
                 paid,
@@ -286,15 +284,30 @@ public class EventsServiceImpl implements EventsService {
                 onlyAvailable,
                 pageable).stream()
                 .map(EventMapper::eventToPublicOutDto)
-                .collect(Collectors.toList());
+                .collect(Collectors.toMap(EventPublicOutDto::getId, eventPublicOutDto -> eventPublicOutDto));
 
-        for (EventPublicOutDto eventPublicOutDto : events) {
-            try {
-                eventPublicOutDto.setViews(adminStatsClient.getViews(eventPublicOutDto.getId()));
-            } catch (Exception err) {
-                log.info(">>Hit search send. Error: " + err.getMessage());
-            }
+        List<String> uris = new ArrayList<>();
+
+        eventsMap.forEach((k, v) -> uris.add("/views/" + v.getId()));
+
+        List<StatOutDto> statOutDtoList = new ArrayList<>();
+
+        try {
+            statOutDtoList = adminStatsClient.getHitsByParams(
+                    LocalDateTime.of(2000,1,1,0,0).format(DateTimeFormatter.ofPattern(Constants.DATE_TIME_STRING)),
+                    LocalDateTime.now().format(DateTimeFormatter.ofPattern(Constants.DATE_TIME_STRING)),
+                    uris,
+                    true);
+        } catch (Exception err) {
+            log.info(">>Hit search send. Error: " + err.getMessage());
         }
+
+        for (StatOutDto statOutDto : statOutDtoList) {
+            Long key = Long.parseLong(statOutDto.getUri().replace("/views/", ""));
+            eventsMap.get(key).setViews(statOutDto.getHits());
+        }
+
+        List<EventPublicOutDto> events = (List) eventsMap.values();
 
         switch (sortType) {
             case EVENT_DATE:

@@ -36,9 +36,6 @@ public class Event {
     @Column(name = "request_moderation")
     private Boolean requestModeration;
     private String title;
-    @Column(columnDefinition = "INTEGER DEFAULT 0")
-    @Builder.Default
-    private Integer rate = 0;
 
     @Enumerated(EnumType.STRING)
     private EventState state;

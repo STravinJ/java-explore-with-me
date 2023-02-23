@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.service.requests.model.Request;
 import ru.practicum.service.requests.model.RequestState;
+import ru.practicum.service.users.model.User;
 
 import java.util.List;
 
@@ -31,6 +32,8 @@ public interface RequestsRepository extends JpaRepository<Request, Long> {
             " WHERE e.id = :eventId AND r.status = :requestState "
     )
     List<Request> findAllByRequestStateAndEventId(Long eventId, RequestState requestState);
+
+    List<Request> findAllByIdIn(Long[] ids);
 
     boolean existsByRequesterIdAndEventIdAndStatus(Long userId, Long eventId, RequestState requestState);
 }

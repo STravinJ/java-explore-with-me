@@ -18,9 +18,9 @@ public interface RequestsService {
 
     RequestOutDto cancelRequest(Long userId, Long requestId) throws UserNotFoundException, RequestNotFoundException;
 
-    RequestOutDto rejectRequest(Long userId, Long eventId, Long requestId) throws RequestNotFoundException, AccessDeniedException, UserNotFoundException;
+    List<RequestOutDto> rejectRequest(Long userId, Long eventId, Long[] requestId) throws RequestNotFoundException, AccessDeniedException, UserNotFoundException;
 
-    RequestOutDto confirmRequest(Long userId, Long eventId, Long requestId) throws UserNotFoundException, RequestNotFoundException, AccessDeniedException;
+    List<RequestOutDto> confirmRequest(Long userId, Long eventId, Long[] requestId) throws UserNotFoundException, RequestNotFoundException, AccessDeniedException;
 
     List<RequestOutDto> findAllEventRequests(Long userId, Long eventId) throws UserNotFoundException, EventNotFoundException;
 

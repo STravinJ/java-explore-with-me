@@ -10,7 +10,6 @@ CREATE TABLE IF NOT EXISTS users
     id    BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     name  VARCHAR(250) NOT NULL,
     email VARCHAR(100) UNIQUE,
-    rate  NUMERIC(10, 2) DEFAULT 0,
     CONSTRAINT UQ_USER_EMAIL UNIQUE (email)
 );
 
@@ -50,8 +49,7 @@ CREATE TABLE IF NOT EXISTS events
     request_moderation BOOLEAN DEFAULT true,
     state              VARCHAR(15),
     title              VARCHAR(120)
-        CONSTRAINT title_length CHECK (char_length(title) >= 3),
-    rate               INTEGER DEFAULT 0
+        CONSTRAINT title_length CHECK (char_length(title) >= 3)
 );
 
 CREATE TABLE IF NOT EXISTS compilations

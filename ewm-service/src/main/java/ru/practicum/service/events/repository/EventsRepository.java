@@ -53,22 +53,4 @@ public interface EventsRepository extends JpaRepository<Event, Long> {
 
     int countByInitiatorId(Long userId);
 
-    @Query("SELECT SUM(e.rate) FROM Event e " +
-            " WHERE e.initiator.id = :userId"
-    )
-    long sumRateByInitiatorId(Long userId);
-
-    @Modifying(clearAutomatically = true, flushAutomatically = true)
-    @Transactional
-    @Query("UPDATE Event e " +
-            " SET e.rate = e.rate + 1 " +
-            " WHERE e.id = :eventId")
-    void incrementRate(Long eventId);
-
-    @Modifying(clearAutomatically = true, flushAutomatically = true)
-    @Transactional
-    @Query("UPDATE Event e " +
-            " SET e.rate = e.rate - 1 " +
-            " WHERE e.id = :eventId")
-    void decrementRate(Long eventId);
 }

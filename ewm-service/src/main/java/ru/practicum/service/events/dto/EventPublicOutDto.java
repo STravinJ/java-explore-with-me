@@ -34,5 +34,4 @@ public class EventPublicOutDto {
     private Boolean requestModeration;
     private EventState state;
     private Long views;
-    private Integer rate;
 }

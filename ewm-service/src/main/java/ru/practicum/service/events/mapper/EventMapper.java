@@ -42,7 +42,6 @@ public class EventMapper {
                 .publishedOn(event.getPublishedOn())
                 .requestModeration(event.getRequestModeration())
                 .state(event.getState())
-                .rate(event.getRate())
                 .build();
     }
 
@@ -71,7 +70,6 @@ public class EventMapper {
                 .publishedOn(event.getPublishedOn())
                 .requestModeration(event.getRequestModeration())
                 .state(event.getState())
-                .rate(event.getRate())
                 .build();
     }
 

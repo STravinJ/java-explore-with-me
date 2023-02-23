@@ -41,22 +41,6 @@ public class UsersRequestsController {
 
     }
 
-    @PatchMapping("/events/{eventId}/requests/{reqId}/confirm")
-    public RequestOutDto confirmRequest(@PathVariable Long userId,
-                                        @PathVariable Long eventId,
-                                        @PathVariable Long reqId)
-            throws RequestNotFoundException, AccessDeniedException, UserNotFoundException {
-        return requestsService.confirmRequest(userId, eventId, reqId);
-    }
-
-    @PatchMapping("/events/{eventId}/requests/{reqId}/reject")
-    public RequestOutDto rejectRequest(@PathVariable Long userId,
-                                       @PathVariable Long eventId,
-                                       @PathVariable Long reqId)
-            throws RequestNotFoundException, AccessDeniedException, UserNotFoundException {
-        return requestsService.rejectRequest(userId, eventId, reqId);
-    }
-
     @ResponseStatus(value = HttpStatus.CREATED)
     @PostMapping("/requests")
     public RequestOutDto addRequest(@PathVariable Long userId,

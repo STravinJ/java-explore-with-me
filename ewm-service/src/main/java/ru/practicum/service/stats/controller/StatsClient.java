@@ -6,6 +6,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import ru.practicum.service.stats.dto.StatInDto;
+import ru.practicum.service.stats.dto.StatOutDto;
 import ru.practicum.service.utils.BaseClient;
 
 import java.util.List;
@@ -20,14 +21,16 @@ public class StatsClient extends BaseClient {
         super(serverUrl);
     }
 
-    public ResponseEntity<Object> getHitsByParams(String start, String end, List<String> uris, Boolean unique) {
+    public List<StatOutDto> getHitsByParams(String start, String end, List<String> uris, Boolean unique) {
         Map<String, Object> parameters = Map.of(
                 "start", start,
                 "end", end,
                 "uris", uris,
                 "unique", unique
         );
-        return get("/?start={start}&end={end}&uris={uris}&unique={unique}", parameters);
+        ResponseEntity<Object> statOutDtoList = get("/?start={start}&end={end}&uris={uris}&unique={unique}",
+                parameters);
+        return (List<StatOutDto>) statOutDtoList.getBody();
     }
 
     public void saveHit(StatInDto statInDto) {
@@ -41,4 +44,5 @@ public class StatsClient extends BaseClient {
         ResponseEntity<Object> views = get("/views/{eventId}", parameters);
         return (Long) views.getBody();
     }
+
 }
