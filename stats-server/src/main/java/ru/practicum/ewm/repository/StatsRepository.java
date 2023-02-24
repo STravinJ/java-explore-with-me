@@ -40,4 +40,5 @@ public interface StatsRepository extends JpaRepository<Stat, Long> {
             " ORDER BY count(s.id) DESC"
     )
     List<StatOutDto> countByTimestampAndListUniqueIp(LocalDateTime start, LocalDateTime end, List<String> uris);
+
 }
