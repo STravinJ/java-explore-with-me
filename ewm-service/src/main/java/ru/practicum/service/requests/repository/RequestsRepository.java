@@ -42,7 +42,7 @@ public interface RequestsRepository extends JpaRepository<Request, Long> {
             " SET r.status = ru.practicum.service.requests.model.RequestState.CONFIRMED " +
             " WHERE r.id IN :requestsId" +
             " ")
-    void confirmAllRequests(Long[] requestsId);
+    void confirmAllRequests(List<Long> requestsId);
 
     @Query("SELECT r FROM Request r " +
             " JOIN Event e ON r.event.id = e.id " +

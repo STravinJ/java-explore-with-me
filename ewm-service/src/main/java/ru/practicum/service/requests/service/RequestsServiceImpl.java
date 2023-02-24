@@ -22,6 +22,7 @@ import ru.practicum.service.users.repository.UsersRepository;
 
 import java.nio.file.AccessDeniedException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -48,7 +49,7 @@ public class RequestsServiceImpl implements RequestsService {
             confirmedRequestsCount = requestsRepository.findAllByRequestStateAndEventId(eventId, RequestState.CONFIRMED).size();
         }
 
-        Long[] confirmedRequests = new Long[0];
+        List<Long> confirmedRequests = new ArrayList<>();
 
         List<Request> requests = requestsRepository.findAllByIdIn(requestId);
 
@@ -68,13 +69,13 @@ public class RequestsServiceImpl implements RequestsService {
 
             if (participantLimit != 0) {
                 confirmedRequestsCount = confirmedRequestsCount + 1;
-                if (participantLimit - confirmedRequestsCount <= 0) {
+                if (participantLimit - confirmedRequestsCount < 0) {
                     rejectedRequests = true;
                     break;
                 }
             }
 
-            confirmedRequests[confirmedRequests.length] = request.getId();
+            confirmedRequests.add(request.getId());
 
             request.setStatus(RequestState.CONFIRMED);
 
