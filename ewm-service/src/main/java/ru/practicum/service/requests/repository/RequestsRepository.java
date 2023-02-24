@@ -18,7 +18,31 @@ public interface RequestsRepository extends JpaRepository<Request, Long> {
             " SET r.status = ru.practicum.service.requests.model.RequestState.REJECTED " +
             " WHERE r.event.id = :eventId AND r.status = ru.practicum.service.requests.model.RequestState.PENDING " +
             " ")
-    void rejectAllPendingRequest(Long eventId);
+    void rejectAllPendingRequestsOfEvent(Long eventId);
+
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
+    @Transactional
+    @Query("UPDATE Request r " +
+            " SET r.status = ru.practicum.service.requests.model.RequestState.CONFIRMED " +
+            " WHERE r.event.id IN :eventId AND r.status = ru.practicum.service.requests.model.RequestState.PENDING " +
+            " ")
+    void confirmAllPendingRequestOfEvents(Long[] eventId);
+
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
+    @Transactional
+    @Query("UPDATE Request r " +
+            " SET r.status = ru.practicum.service.requests.model.RequestState.REJECTED " +
+            " WHERE r.id IN :requestsId" +
+            " ")
+    void rejectAllRequests(Long[] requestsId);
+
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
+    @Transactional
+    @Query("UPDATE Request r " +
+            " SET r.status = ru.practicum.service.requests.model.RequestState.CONFIRMED " +
+            " WHERE r.id IN :requestsId" +
+            " ")
+    void confirmAllRequests(Long[] requestsId);
 
     @Query("SELECT r FROM Request r " +
             " JOIN Event e ON r.event.id = e.id " +
@@ -31,6 +55,12 @@ public interface RequestsRepository extends JpaRepository<Request, Long> {
             " WHERE e.id = :eventId AND r.status = :requestState "
     )
     List<Request> findAllByRequestStateAndEventId(Long eventId, RequestState requestState);
+
+    @Query("SELECT r FROM Request r " +
+            " JOIN Event e ON r.event.id = e.id " +
+            " WHERE e.id IN :eventId AND r.status = :requestState "
+    )
+    List<Request> findAllByRequestStateAndEventIds(Long[] eventId, RequestState requestState);
 
     List<Request> findAllByIdIn(Long[] ids);
 

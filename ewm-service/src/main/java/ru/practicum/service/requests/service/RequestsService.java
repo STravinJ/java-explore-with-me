@@ -20,10 +20,10 @@ public interface RequestsService {
 
     List<RequestOutDto> rejectRequest(Long userId, Long eventId, Long[] requestId) throws RequestNotFoundException, AccessDeniedException, UserNotFoundException;
 
-    List<RequestOutDto> confirmRequest(Long userId, Long eventId, Long[] requestId) throws UserNotFoundException, RequestNotFoundException, AccessDeniedException;
+    List<RequestOutDto> confirmRequest(Long userId, Long eventId, Long[] requestId) throws UserNotFoundException, RequestNotFoundException, AccessDeniedException, EventNotFoundException;
 
     List<RequestOutDto> findAllEventRequests(Long userId, Long eventId) throws UserNotFoundException, EventNotFoundException;
 
-    EventOutDto updateRequestsStatusDto(Long userId, Long eventId, RequestInDto requestInDto) throws RequestNotFoundException, AccessDeniedException, UserNotFoundException;
+    EventOutDto updateRequestsStatusDto(Long userId, Long eventId, RequestInDto requestInDto) throws RequestNotFoundException, AccessDeniedException, UserNotFoundException, EventNotFoundException;
 
 }

@@ -33,18 +33,29 @@ public class RequestsServiceImpl implements RequestsService {
 
     @Override
     @Transactional
-    public List<RequestOutDto> confirmRequest(Long userId, Long eventId, Long[] requestId) throws UserNotFoundException, RequestNotFoundException, AccessDeniedException {
+    public List<RequestOutDto> confirmRequest(Long userId, Long eventId, Long[] requestId) throws UserNotFoundException, AccessDeniedException, EventNotFoundException {
         if (!usersRepository.existsById(userId)) {
             throw new UserNotFoundException("User ID not found.");
         }
 
+        Event event = eventsRepository.findById(eventId).orElseThrow(
+                () -> new EventNotFoundException("Event ID not found.")
+        );
+
+        Integer confirmedRequestsCount = 0;
+        Integer participantLimit = event.getParticipantLimit();
+        if (participantLimit != 0) {
+            confirmedRequestsCount = requestsRepository.findAllByRequestStateAndEventId(eventId, RequestState.CONFIRMED).size();
+        }
+
+        Long[] confirmedRequests = new Long[0];
+
         List<Request> requests = requestsRepository.findAllByIdIn(requestId);
-        Boolean rejectAllPendingRequest = false;
+
+        Boolean rejectedRequests = false;
+
         for (Request request : requests) {
-            if (rejectAllPendingRequest) {
-                requestsRepository.rejectAllPendingRequest(eventId);
-                throw new IllegalStateException("Event don't have any free slot.");
-            }
+
             if (request.getStatus() != RequestState.PENDING) {
                 throw new IllegalStateException("Request status can be PENDING.");
             }
@@ -54,30 +65,33 @@ public class RequestsServiceImpl implements RequestsService {
             if (!request.getEvent().getInitiator().getId().equals(userId)) {
                 throw new AccessDeniedException("Only owner of Event can Reject Request.");
             }
-            Event event = request.getEvent();
-            Integer confirmedRequests = 0;
-            Integer participantLimit = event.getParticipantLimit();
+
             if (participantLimit != 0) {
-                confirmedRequests = requestsRepository.findAllByRequestStateAndEventId(eventId, RequestState.CONFIRMED).size();
-                if (participantLimit - confirmedRequests <= 0) {
-                    requestsRepository.rejectAllPendingRequest(eventId);
-                    throw new IllegalStateException("Event don't have any free slot.");
+                confirmedRequestsCount = confirmedRequestsCount + 1;
+                if (participantLimit - confirmedRequestsCount < 0) {
+                    rejectedRequests = true;
+                    break;
                 }
             }
 
-            request.setStatus(RequestState.CONFIRMED);
-            requestsRepository.saveAndFlush(request);
-            if (participantLimit != 0 && (participantLimit - confirmedRequests - 1) <= 0) {
-                rejectAllPendingRequest = true;
-            }
+            confirmedRequests[confirmedRequests.length] = request.getId();
 
+            request.setStatus(RequestState.CONFIRMED);
+
+        }
+
+        requestsRepository.confirmAllRequests(confirmedRequests);
+
+        if (rejectedRequests) {
+            requestsRepository.rejectAllPendingRequestsOfEvent(eventId);
+            throw new IllegalStateException("Event don't have any free slot.");
         }
 
         return RequestMapper.requestsToListOutDto(requests);
     }
 
     @Override
-    public EventOutDto updateRequestsStatusDto(Long userId, Long eventId, RequestInDto requestInDto) throws UserNotFoundException, RequestNotFoundException, AccessDeniedException {
+    public EventOutDto updateRequestsStatusDto(Long userId, Long eventId, RequestInDto requestInDto) throws UserNotFoundException, RequestNotFoundException, AccessDeniedException, EventNotFoundException {
 
         EventOutDto eventOutDto = new EventOutDto();
         if (requestInDto.getStatus().equals(RequestState.REJECTED)) {
@@ -91,7 +105,7 @@ public class RequestsServiceImpl implements RequestsService {
     }
 
     @Override
-    public List<RequestOutDto> rejectRequest(Long userId, Long eventId, Long[] requestId) throws RequestNotFoundException, AccessDeniedException, UserNotFoundException {
+    public List<RequestOutDto> rejectRequest(Long userId, Long eventId, Long[] requestId) throws AccessDeniedException, UserNotFoundException {
         if (!usersRepository.existsById(userId)) {
             throw new UserNotFoundException("User ID not found.");
         }
@@ -107,8 +121,8 @@ public class RequestsServiceImpl implements RequestsService {
                 throw new AccessDeniedException("The Request is already confirmed.");
             }
             request.setStatus(RequestState.REJECTED);
-            requestsRepository.saveAndFlush(request);
         }
+        requestsRepository.rejectAllRequests(requestId);
         return RequestMapper.requestsToListOutDto(requests);
     }
 
