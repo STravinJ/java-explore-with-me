@@ -42,7 +42,7 @@ public class RequestsServiceImpl implements RequestsService {
                 () -> new EventNotFoundException("Event ID not found.")
         );
 
-        Integer confirmedRequestsCount = 0;
+        int confirmedRequestsCount = 0;
         Integer participantLimit = event.getParticipantLimit();
         if (participantLimit != 0) {
             confirmedRequestsCount = requestsRepository.findAllByRequestStateAndEventId(eventId, RequestState.CONFIRMED).size();
@@ -52,7 +52,7 @@ public class RequestsServiceImpl implements RequestsService {
 
         List<Request> requests = requestsRepository.findAllByIdIn(requestId);
 
-        Boolean rejectedRequests = false;
+        boolean rejectedRequests = false;
 
         for (Request request : requests) {
 
@@ -68,7 +68,7 @@ public class RequestsServiceImpl implements RequestsService {
 
             if (participantLimit != 0) {
                 confirmedRequestsCount = confirmedRequestsCount + 1;
-                if (participantLimit - confirmedRequestsCount < 0) {
+                if (participantLimit - confirmedRequestsCount <= 0) {
                     rejectedRequests = true;
                     break;
                 }
