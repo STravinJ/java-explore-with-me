@@ -1,5 +1,8 @@
 # java-explore-with-me
 
+Ссылка на пул-реквест
+https://github.com/STravinJ/java-explore-with-me/pull/3
+
 Технологический стек:
 Java Core, Spring Boot, H2, Hibernate, Docker, Maven
 
