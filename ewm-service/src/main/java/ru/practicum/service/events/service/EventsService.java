@@ -8,9 +8,13 @@ import ru.practicum.service.events.exceptions.DateException;
 import ru.practicum.service.events.exceptions.EventClosedException;
 import ru.practicum.service.events.exceptions.EventNotFoundException;
 import ru.practicum.service.events.model.SortType;
+import ru.practicum.service.rating.exceptions.DoubleLikeException;
+import ru.practicum.service.rating.exceptions.LikeNotFoundException;
+import ru.practicum.service.rating.model.LikeType;
 import ru.practicum.service.users.exceptions.UserNotFoundException;
 
 import javax.servlet.http.HttpServletRequest;
+import java.nio.file.AccessDeniedException;
 import java.util.List;
 
 public interface EventsService {
@@ -44,4 +48,8 @@ public interface EventsService {
     EventOutDto rejectEvent(Long eventId) throws EventClosedException, EventNotFoundException;
 
     EventOutDto updateEvent(Long eventId, EventInDto eventInDto, String stateAction) throws EventNotFoundException, CategoryNotFoundException, DateException, EventClosedException;
+
+    void addLike(Long userId, Long eventId, LikeType likeType) throws UserNotFoundException, EventNotFoundException, DoubleLikeException, LikeNotFoundException, AccessDeniedException;
+
+    void removeLike(Long userId, Long eventId, LikeType likeType) throws UserNotFoundException, EventNotFoundException, LikeNotFoundException, AccessDeniedException;
 }

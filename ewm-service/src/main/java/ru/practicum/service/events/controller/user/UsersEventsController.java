@@ -13,12 +13,16 @@ import ru.practicum.service.events.exceptions.DateException;
 import ru.practicum.service.events.exceptions.EventClosedException;
 import ru.practicum.service.events.exceptions.EventNotFoundException;
 import ru.practicum.service.events.service.EventsService;
+import ru.practicum.service.rating.exceptions.DoubleLikeException;
+import ru.practicum.service.rating.exceptions.LikeNotFoundException;
+import ru.practicum.service.rating.model.LikeType;
 import ru.practicum.service.users.exceptions.UserNotFoundException;
 import ru.practicum.service.utils.Constants;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
+import java.nio.file.AccessDeniedException;
 import java.util.List;
 
 @RestController
@@ -84,6 +88,32 @@ public class UsersEventsController {
             eventInDto.setEventId(eventId);
             return eventsService.updateEvent(userId, eventInDto);
         }
+    }
+
+    @PutMapping("/{eventId}/like")
+    public void addLike(
+            @Positive @PathVariable Long userId,
+            @Positive @PathVariable Long eventId,
+            @RequestParam(name = "type") String type
+    ) throws UserNotFoundException,
+            EventNotFoundException,
+            DoubleLikeException,
+            LikeNotFoundException,
+            AccessDeniedException {
+        LikeType likeType = LikeType.from(type)
+                .orElseThrow(() -> new IllegalArgumentException("Unknown type: " + type));
+        eventsService.addLike(userId, eventId, likeType);
+    }
+
+    @DeleteMapping("/{eventId}/like")
+    public void removeLike(
+            @Positive @PathVariable Long userId,
+            @Positive @PathVariable Long eventId,
+            @RequestParam(name = "type") String type
+    ) throws UserNotFoundException, EventNotFoundException, LikeNotFoundException, AccessDeniedException {
+        LikeType likeType = LikeType.from(type)
+                .orElseThrow(() -> new IllegalArgumentException("Unknown type: " + type));
+        eventsService.removeLike(userId, eventId, likeType);
     }
 
 }

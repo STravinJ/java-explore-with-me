@@ -4,7 +4,8 @@ import java.util.Optional;
 
 public enum SortType {
     EVENT_DATE,
-    VIEWS;
+    VIEWS,
+    LIKES;
 
     public static Optional<SortType> from(String stringType) {
         for (SortType type : values()) {

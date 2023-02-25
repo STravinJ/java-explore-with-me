@@ -4,6 +4,7 @@ DROP TABLE IF EXISTS events cascade;
 DROP TABLE IF EXISTS users cascade;
 DROP TABLE IF EXISTS categories cascade;
 DROP TABLE IF EXISTS locations cascade;
+DROP TABLE IF EXISTS likes cascade;
 
 CREATE TABLE IF NOT EXISTS users
 (
@@ -74,4 +75,12 @@ CREATE TABLE IF NOT EXISTS requests (
     status VARCHAR(30) NOT NULL,
     CONSTRAINT pk_request PRIMARY KEY (id),
     CONSTRAINT UQ_EVENT_REQ UNIQUE (event_id, requester_id)
-    );
+);
+
+CREATE TABLE IF NOT EXISTS likes
+(
+    id       BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    user_id  BIGINT REFERENCES users (id),
+    event_id BIGINT REFERENCES events (id),
+    type     VARCHAR(7)
+);
