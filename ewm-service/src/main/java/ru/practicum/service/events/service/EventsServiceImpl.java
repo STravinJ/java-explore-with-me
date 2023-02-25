@@ -259,7 +259,7 @@ public class EventsServiceImpl implements EventsService {
 
         EventPublicOutDto eventPublicOutDto = EventMapper.eventToPublicOutDto(event);
 
-        Long rate = likeRepository.findRateByEventId(eventId).orElse(0l);
+        Long rate = likeRepository.findRateByEventId(eventId).orElse(0L);
 
         eventPublicOutDto.setRate(rate);
 
@@ -327,7 +327,7 @@ public class EventsServiceImpl implements EventsService {
         List<Object[]> list = likeRepository.findAllWithRateByEventIdIn(eventsIds);
         Map<Long, Long> eventsLikes = new HashMap<>();
 
-        for (Object[] ob : list){
+        for (Object[] ob : list) {
             eventsLikes.put((Long)ob[0], (Long)ob[1]);
         }
 
