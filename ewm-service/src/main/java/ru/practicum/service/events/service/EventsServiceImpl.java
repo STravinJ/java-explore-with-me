@@ -21,6 +21,13 @@ import ru.practicum.service.events.model.Event;
 import ru.practicum.service.events.model.EventState;
 import ru.practicum.service.events.model.SortType;
 import ru.practicum.service.events.repository.EventsRepository;
+import ru.practicum.service.rating.exceptions.DoubleLikeException;
+import ru.practicum.service.rating.exceptions.LikeNotFoundException;
+import ru.practicum.service.rating.model.Like;
+import ru.practicum.service.rating.model.LikeType;
+import ru.practicum.service.rating.repository.LikeRepository;
+import ru.practicum.service.requests.model.RequestState;
+import ru.practicum.service.requests.repository.RequestsRepository;
 import ru.practicum.service.stats.controller.StatsClient;
 import ru.practicum.service.stats.dto.StatInDto;
 import ru.practicum.service.stats.dto.StatOutDto;
@@ -31,6 +38,7 @@ import ru.practicum.service.utils.Constants;
 import ru.practicum.service.utils.Utils;
 
 import javax.servlet.http.HttpServletRequest;
+import java.nio.file.AccessDeniedException;
 import java.security.InvalidParameterException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -44,7 +52,9 @@ public class EventsServiceImpl implements EventsService {
     private final EventsRepository eventsRepository;
     private final StatsClient adminStatsClient;
     private final UsersRepository usersRepository;
+    private final LikeRepository likeRepository;
     private final CategoriesRepository categoriesRepository;
+    private final RequestsRepository requestsRepository;
 
 
     @Override
@@ -247,7 +257,13 @@ public class EventsServiceImpl implements EventsService {
             log.info(">>Hit send. Error: " + err.getMessage());
         }
 
-        return EventMapper.eventToPublicOutDto(event);
+        EventPublicOutDto eventPublicOutDto = EventMapper.eventToPublicOutDto(event);
+
+        Long rate = likeRepository.findRateByEventId(eventId).orElse(0L);
+
+        eventPublicOutDto.setRate(rate);
+
+        return eventPublicOutDto;
     }
 
     @Override
@@ -288,8 +304,13 @@ public class EventsServiceImpl implements EventsService {
                 .collect(Collectors.toMap(EventPublicOutDto::getId, eventPublicOutDto -> eventPublicOutDto));
 
         List<String> uris = new ArrayList<>();
+        List<Long> eventsIds = new ArrayList<>();
 
-        eventsMap.forEach((k, v) -> uris.add("/views/" + v.getId()));
+        for (Map.Entry<Long, EventPublicOutDto> entry : eventsMap.entrySet()) {
+            EventPublicOutDto value = entry.getValue();
+            uris.add("/views/" + value.getId());
+            eventsIds.add(value.getId());
+        }
 
         List<StatOutDto> statOutDtoList = new ArrayList<>();
 
@@ -302,6 +323,15 @@ public class EventsServiceImpl implements EventsService {
         } catch (Exception err) {
             log.info(">>Hit search send. Error: " + err.getMessage());
         }
+
+        List<Object[]> list = likeRepository.findAllWithRateByEventIdIn(eventsIds);
+        Map<Long, Long> eventsLikes = new HashMap<>();
+
+        for (Object[] ob : list) {
+            eventsLikes.put((Long)ob[0], (Long)ob[1]);
+        }
+
+        eventsLikes.entrySet().forEach(entry -> eventsMap.get(entry.getKey()).setRate(entry.getValue()));
 
         for (StatOutDto statOutDto : statOutDtoList) {
             Long key = Long.parseLong(statOutDto.getUri().replace("/views/", ""));
@@ -321,6 +351,11 @@ public class EventsServiceImpl implements EventsService {
                         .sorted(Comparator.comparing(EventPublicOutDto::getViews))
                         .collect(Collectors.toUnmodifiableList());
                 break;
+            case LIKES:
+                events = events.stream()
+                        .sorted(Comparator.comparing(EventPublicOutDto::getRate))
+                        .collect(Collectors.toUnmodifiableList());
+                break;
             default:
                 throw new IllegalArgumentException("Указан не существующий тип сортировки.");
         }
@@ -338,4 +373,60 @@ public class EventsServiceImpl implements EventsService {
 
         return events;
     }
+
+    @Override
+    @Transactional
+    public void addLike(Long userId, Long eventId, LikeType likeType)
+            throws UserNotFoundException, EventNotFoundException, DoubleLikeException, LikeNotFoundException, AccessDeniedException {
+        Event event = eventsRepository.findByIdAndState(eventId, EventState.PUBLISHED).orElseThrow(
+                () -> new EventNotFoundException("Event not found.")
+        );
+        if (!usersRepository.existsById(userId)) {
+            throw new UserNotFoundException("User ID not found.");
+        }
+        if (userId.equals(event.getInitiator().getId())) {
+            throw new AccessDeniedException("Запрещено оценивать собственное событие.");
+        }
+        if (!requestsRepository.existsByRequesterIdAndEventIdAndStatus(userId, eventId, RequestState.CONFIRMED)) {
+            throw new AccessDeniedException("Запрещено оценивать событие в которых не участвуешь.");
+        }
+
+        Long actualLikeId = null;
+        Optional<Like> like = likeRepository.findByEventIdAndUserId(userId, eventId);
+        if (like.isPresent()) {
+            actualLikeId = like.get().getId();
+            LikeType actualLikeType = like.get().getType();
+            if (actualLikeType.equals(likeType)) {
+                throw new DoubleLikeException("Можно поставить только один раз.");
+            }
+            likeRepository.updateLikeTypeForLikeId(actualLikeId, likeType);
+            return;
+        }
+        likeRepository.saveAndFlush(new Like(null, userId, eventId, likeType));
+
+    }
+
+    @Override
+    @Transactional
+    public void removeLike(Long userId, Long eventId, LikeType likeType)
+            throws UserNotFoundException, EventNotFoundException, LikeNotFoundException, AccessDeniedException {
+        Event event = eventsRepository.findByIdAndState(eventId, EventState.PUBLISHED).orElseThrow(
+                () -> new EventNotFoundException("Event not found.")
+        );
+
+        if (!usersRepository.existsById(userId)) {
+            throw new UserNotFoundException("User ID not found.");
+        }
+
+        if (userId.equals(event.getInitiator().getId())) {
+            throw new AccessDeniedException("Запрещено оценивать собственное событие.");
+        }
+
+        Like like = likeRepository.findLikeByUserIdAndEventIdAndType(userId, eventId, likeType)
+                .orElseThrow(
+                        () -> new LikeNotFoundException(likeType + " not found.")
+                );
+        likeRepository.delete(like);
+    }
+
 }
