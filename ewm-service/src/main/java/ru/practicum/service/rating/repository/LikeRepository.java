@@ -19,6 +19,11 @@ public interface LikeRepository extends JpaRepository<Like, Long> {
     )
     List<Object[]> findAllWithRateByEventIdIn(List<Long> eventId);
 
+    @Query("UPDATE Like l " +
+            " SET l.type = :likeType " +
+            " WHERE l.id = :likeId")
+    void updateLikeTypeForLikeId(Long likeId, LikeType likeType);
+
     Optional<Like> findLikeByUserIdAndEventIdAndType(Long userId, Long eventId, LikeType likeType);
 
     @Query("SELECT SUM(CASE l.type" +

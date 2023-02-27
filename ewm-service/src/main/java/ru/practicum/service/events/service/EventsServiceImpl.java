@@ -391,17 +391,16 @@ public class EventsServiceImpl implements EventsService {
             throw new AccessDeniedException("Запрещено оценивать событие в которых не участвуешь.");
         }
 
+        Long actualLikeId = null;
         Optional<Like> like = likeRepository.findByEventIdAndUserId(userId, eventId);
         if (like.isPresent()) {
-            if (like.get().getType() != likeType) {
-                LikeType deleteType = LikeType.LIKE;
-                if (likeType == LikeType.LIKE) {
-                    deleteType = LikeType.DISLIKE;
-                }
-                removeLike(userId, eventId, deleteType);
-            } else {
+            actualLikeId = like.get().getId();
+            LikeType actualLikeType = like.get().getType();
+            if (actualLikeType.equals(likeType)) {
                 throw new DoubleLikeException("Можно поставить только один раз.");
             }
+            likeRepository.updateLikeTypeForLikeId(actualLikeId, likeType);
+            return;
         }
         likeRepository.saveAndFlush(new Like(null, userId, eventId, likeType));
 
